@@ -1,0 +1,77 @@
+from psychopy import core, visual, event, monitors
+import os
+
+PTH = r"C:\Users\LEON-NETB\Dropbox\LEON_CIECHANOWSKI\images" # MUST BE CHANGED
+os.chdir(PTH)
+
+win = visual.Window((1200,1000), fullscr=False, monitor='Default', units = 'deg', color='black') # MUST BE CHANGED (E.G. TO A DEFAULT ONE)
+
+# a list of stimuli images:
+tleft = visual.ImageStim(win=win, image='target_left.png')
+tright = visual.ImageStim(win=win, image='target_right.png')
+tboth = visual.ImageStim(win=win, image='target_both.png')
+
+# a list of primes images:
+pleft = visual.ImageStim(win=win, image='prime_left.png')
+pright = visual.ImageStim(win=win, image='prime_right.png')
+
+# a list of colors images:
+cexample = visual.ImageStim(win=win, image='color_example.png')
+cblue = visual.ImageStim(win=win, image='color_blue.png')
+cred = visual.ImageStim(win=win, image='color_red.png')
+cgreen = visual.ImageStim(win=win, image='color_green.png')
+cpurple = visual.ImageStim(win=win, image='color_purple.png')
+corange = visual.ImageStim(win=win, image='color_orange.png')
+cyellow = visual.ImageStim(win=win, image='color_yellow.png')
+
+# error image:
+grey = visual.ImageStim(win=win, image='grey.png')
+#######################
+
+
+
+# TESTS:
+
+#######################
+# present objects
+print "cyellow original size = ", cyellow.size
+cyellow.pos = [-10, 0]
+cyellow.draw()
+cyellow.pos = [0, -10]
+cyellow.size = [3, 3] # image scaled to 3 * 3 degrees of the visual angle (?)
+cyellow.draw()
+print "prime left original size = ", pleft.size
+print "target left original size = ", tleft.size
+
+pleft.size *= 0.333
+tleft.size *= 0.333
+print "prime left new size = ", pleft.size
+print "target left new size = ", tleft.size
+
+win.flip()
+event.waitKeys()
+
+'''
+print cred.size
+cred.pos = [0.7, 0]
+cred.draw()
+cred.pos = [0, 0.7]
+cred.size = [0.2, 0.2]
+cred.draw()   # for testing only
+'''
+
+
+clock = core.Clock()
+keepLooping = True
+while keepLooping:
+    for img in [tleft, pleft]:
+        if keepLooping:
+            for frameN in range(1):
+                img.draw()
+                win.flip()
+                keys = event.getKeys(keyList=['space', 'escape'])
+                if keys:
+                    rt = clock.getTime()
+                    keepLooping = False
+                    print "rt = ", rt
+                    break
