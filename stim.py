@@ -20,6 +20,7 @@ stim['pright'] = visual.ImageStim(win=win, image='prime_right.png')
 names = ['example', 'blue', 'red', 'green', 'purple', 'orange', 'yellow']
 stim['circle'] = {k: visual.ImageStim(win, image='color_{}.png'.format(k)) for k in names}
 stim['circle']['grey'] = visual.ImageStim(win, image='grey.png')
+# mala zmiana
 
 
 # TESTS:
