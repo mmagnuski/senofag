@@ -1,7 +1,7 @@
 from psychopy import core, visual, event, monitors
 import os
 
-PTH = r"C:\Users\LEON-NETB\Dropbox\LEON_CIECHANOWSKI\images" # MUST BE CHANGED
+PTH = os.path.dirname(os.path.abspath(__file__))
 os.chdir(PTH)
 
 win = visual.Window((1200,1000), fullscr=False, monitor='Default', units = 'deg', color='black') # MUST BE CHANGED (E.G. TO A DEFAULT ONE)
