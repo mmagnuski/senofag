@@ -4,30 +4,22 @@ import os
 PTH = os.path.dirname(os.path.abspath(__file__))
 os.chdir(PTH)
 
-win = visual.Window((1200,1000), fullscr=False, monitor='Default', units = 'deg', color='black') # MUST BE CHANGED (E.G. TO A DEFAULT ONE)
+win = visual.Window((1200,1000), fullscr=False, monitor='Default', units='deg', color='black') # MUST BE CHANGED (E.G. TO A DEFAULT ONE)
 
 # a list of stimuli images:
-tleft = visual.ImageStim(win=win, image='target_left.png')
-tright = visual.ImageStim(win=win, image='target_right.png')
-tboth = visual.ImageStim(win=win, image='target_both.png')
+stim = dict()
+stim['tleft'] = visual.ImageStim(win=win, image='target_left.png')
+stim['tright'] = visual.ImageStim(win=win, image='target_right.png')
+stim['tboth'] = visual.ImageStim(win=win, image='target_both.png')
 
 # a list of primes images:
-pleft = visual.ImageStim(win=win, image='prime_left.png')
-pright = visual.ImageStim(win=win, image='prime_right.png')
+stim['pleft'] = visual.ImageStim(win=win, image='prime_left.png')
+stim['pright'] = visual.ImageStim(win=win, image='prime_right.png')
 
 # a list of colors images:
-cexample = visual.ImageStim(win=win, image='color_example.png')
-cblue = visual.ImageStim(win=win, image='color_blue.png')
-cred = visual.ImageStim(win=win, image='color_red.png')
-cgreen = visual.ImageStim(win=win, image='color_green.png')
-cpurple = visual.ImageStim(win=win, image='color_purple.png')
-corange = visual.ImageStim(win=win, image='color_orange.png')
-cyellow = visual.ImageStim(win=win, image='color_yellow.png')
-
-# error image:
-grey = visual.ImageStim(win=win, image='grey.png')
-#######################
-
+names = ['example', 'blue', 'red', 'green', 'purple', 'orange', 'yellow']
+stim['circle'] = {k: visual.ImageStim(win, image='color_{}.png'.format(k)) for k in names}
+stim['circle']['grey'] = visual.ImageStim(win, image='grey.png')
 
 
 # TESTS:
@@ -35,18 +27,18 @@ grey = visual.ImageStim(win=win, image='grey.png')
 #######################
 # present objects
 print "cyellow original size = ", cyellow.size
-cyellow.pos = [-10, 0]
-cyellow.draw()
-cyellow.pos = [0, -10]
-cyellow.size = [3, 3] # image scaled to 3 * 3 degrees of the visual angle (?)
-cyellow.draw()
-print "prime left original size = ", pleft.size
-print "target left original size = ", tleft.size
+stim['circle']['yellow'].pos = [-10, 0]
+stim['circle']['yellow'].draw()
+stim['circle']['yellow'].pos = [0, -10]
+stim['circle']['yellow'].size = [3, 3] # image scaled to 3 * 3 degrees of the visual angle (?)
+stim['circle']['yellow'].draw()
+print "prime left original size = ", stim['pleft'].size
+print "target left original size = ", stim['tleft'].size
 
-pleft.size *= 0.333
-tleft.size *= 0.333
-print "prime left new size = ", pleft.size
-print "target left new size = ", tleft.size
+stim['pleft'].size *= 0.333
+stim['tleft'].size *= 0.333
+print "prime left new size = ", stim['pleft'].size
+print "target left new size = ", stim['tleft'].size
 
 win.flip()
 event.waitKeys()
@@ -64,10 +56,10 @@ cred.draw()   # for testing only
 clock = core.Clock()
 keepLooping = True
 while keepLooping:
-    for img in [tleft, pleft]:
+    for img in ['tleft', 'pleft']:
         if keepLooping:
             for frameN in range(1):
-                img.draw()
+                stim[img].draw()
                 win.flip()
                 keys = event.getKeys(keyList=['space', 'escape'])
                 if keys:
