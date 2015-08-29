@@ -4,7 +4,7 @@ import os
 PTH = os.path.dirname(os.path.abspath(__file__))
 os.chdir(PTH)
 
-win = visual.Window((1200,1000), fullscr=False, monitor='Default', units='deg', color='black') # MUST BE CHANGED (E.G. TO A DEFAULT ONE)
+win = visual.Window((1200,1000), fullscr=False, monitor='testMonitor', units='deg', color='black') # MUST BE CHANGED (E.G. TO A DEFAULT ONE)
 
 # a list of stimuli images:
 stim = dict()
@@ -20,14 +20,17 @@ stim['pright'] = visual.ImageStim(win=win, image='prime_right.png')
 names = ['example', 'blue', 'red', 'green', 'purple', 'orange', 'yellow']
 stim['circle'] = {k: visual.ImageStim(win, image='color_{}.png'.format(k)) for k in names}
 stim['circle']['grey'] = visual.ImageStim(win, image='grey.png')
-# mala zmiana
 
+
+
+#######################
+#######################
 
 # TESTS:
 
 #######################
 # present objects
-print "cyellow original size = ", cyellow.size
+print "cyellow original size = ", stim['circle']['yellow'].size
 stim['circle']['yellow'].pos = [-10, 0]
 stim['circle']['yellow'].draw()
 stim['circle']['yellow'].pos = [0, -10]
@@ -44,15 +47,9 @@ print "target left new size = ", stim['tleft'].size
 win.flip()
 event.waitKeys()
 
-'''
-print cred.size
-cred.pos = [0.7, 0]
-cred.draw()
-cred.pos = [0, 0.7]
-cred.size = [0.2, 0.2]
-cred.draw()   # for testing only
-'''
 
+#######################
+# present target/prime flipping
 
 clock = core.Clock()
 keepLooping = True
