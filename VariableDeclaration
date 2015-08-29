@@ -71,9 +71,4 @@ right_incomp = Kolory[Kwadrat[N, 5]]
 WaitTime = random.randrange(1,4,1)*150
 
 # Draws a random number for positioning the stimuli
-x = random.randrange(1,3,1)
-print x
-if x==1:
-    Posit = 25
-else: 
-    Posit = 75
+Posit = random.choice([25, 75])
