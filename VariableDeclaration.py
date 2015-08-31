@@ -19,6 +19,9 @@ import pandas as pd
 
 NUM_OBJECTS = 6
 
+####
+# ZAMIENIC NA ODNOSNIKI DO PLIKU "stim" !!!!!!!!!
+
 Kolory = []
 Kolory.append("color_red.png")
 Kolory.append("color_green.png")

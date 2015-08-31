@@ -4,6 +4,8 @@ import os
 PTH = os.path.dirname(os.path.abspath(__file__))
 os.chdir(PTH)
 
+####################################################
+
 win = visual.Window((1200,1000), fullscr=False, monitor='testMonitor', units='deg', color='black') # MUST BE CHANGED (E.G. TO A DEFAULT ONE)
 
 # a list of stimuli images:

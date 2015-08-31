@@ -33,7 +33,7 @@ print "Target: ", exp["Target"]
 print "Target RESP: ", exp["Target.RESP"], "\n"
 
 # =============================
-import stim
+import stim      # potem zmienic 
 import VariableDeclaration as vd
 
 # Sprawdzamy czy jest odpowiedz
@@ -109,4 +109,4 @@ else:
 				
 					exp["Effect"] == vd.left_neut
 					#print "left_neut: ", vd.left_neut
-print "\n", "Everything OK. Science, bitch!"
+print "Everything OK"    
