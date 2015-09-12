@@ -15,20 +15,21 @@ import random
 import numpy as np
 import pandas as pd
 
+import stim
+
 #############
 
 NUM_OBJECTS = 6
 
 ####
-# ZAMIENIC NA ODNOSNIKI DO PLIKU "stim" !!!!!!!!!
 
 Kolory = []
-Kolory.append("color_red.png")
-Kolory.append("color_green.png")
-Kolory.append("color_yellow.png")
-Kolory.append("color_blue.png")
-Kolory.append("color_orange.png")
-Kolory.append("color_purple.png")
+Kolory.append(stim.stim['circle']['red'])
+Kolory.append(stim.stim['circle']['green'])
+Kolory.append(stim.stim['circle']['yellow'])
+Kolory.append(stim.stim['circle']['blue'])
+Kolory.append(stim.stim['circle']['orange'])
+Kolory.append(stim.stim['circle']['purple'])
 
 # Randomize array Kolory:
 random.shuffle(Kolory)
@@ -75,3 +76,17 @@ WaitTime = random.randrange(1,4,1)*150
 
 # Draws a random number for positioning the stimuli
 Posit = random.choice([25, 75])
+
+
+
+##############
+# DEBUG
+'''
+Kolory[5].draw()
+stim.win.flip()
+event.waitKeys()
+'''
+
+'''
+print "\nEverything's gonna be alright"
+'''

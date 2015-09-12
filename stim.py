@@ -27,7 +27,7 @@ stim['circle']['grey'] = visual.ImageStim(win, image='grey.png')
 
 #######################
 #######################
-
+'''
 # TESTS:
 
 #######################
@@ -67,3 +67,4 @@ while keepLooping:
                     keepLooping = False
                     print "rt = ", rt
                     break
+'''

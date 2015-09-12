@@ -9,6 +9,9 @@ os.chdir(PTH)
 
 #############
 
+import stim
+import VariableDeclaration as vd
+
 #################################################
 # InLine6 (from 'BlockProc1' --> 'TrialProc1'):
 #################################################
@@ -32,9 +35,6 @@ print "ChoiceType: ", exp["ChoiceType"]
 print "Target: ", exp["Target"]
 print "Target RESP: ", exp["Target.RESP"], "\n"
 
-# =============================
-import stim
-import VariableDeclaration as vd
 
 # Sprawdzamy czy jest odpowiedz
 if exp["Target.RESP"] == "":
@@ -109,4 +109,9 @@ else:
 				
 					exp["Effect"] == vd.left_neut
 					#print "left_neut: ", vd.left_neut
-print "\n", "Everything OK. Science, bitch!"
+
+##########
+# DEBUG:
+'''
+print "\n", "Everything's OK. Science, bitch!"
+'''
