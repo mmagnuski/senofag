@@ -2,12 +2,10 @@ import random
 import numpy as np
 
 Kwadrat = np.array([
-[0,1,2,3,4,5],
-[1,2,3,4,5,0],
-[2,3,1,4,0,5],
-[3,4,2,5,1,0],
-[4,5,0,1,2,3],
-[5,0,4,1,3,2]
+[0, 3, 2, 1],
+[1, 0, 3, 2],
+[2, 1, 0, 3],
+[3, 2, 1, 0]
 ])
 
 exp = dict()
@@ -23,14 +21,12 @@ def shuffle_colors(stim):
 	Kolory.append(stim['circle']['green'])
 	Kolory.append(stim['circle']['yellow'])
 	Kolory.append(stim['circle']['blue'])
-	Kolory.append(stim['circle']['orange'])
-	Kolory.append(stim['circle']['purple'])
 
 	# Randomize array Kolory:
 	random.shuffle(Kolory)
 	return Kolory
 
 def get_colors_from_square(colors, N, exp=exp):
-	names = ['lc', 'ln', 'li', 'rc', 'rn', 'ri']
+	names = ['lc', 'li', 'rc', 'ri']
 	cond_colors = {cnd: colors[exp['kwadrat'][N, i]] 
 		for i, cnd in enumerate(names)}
