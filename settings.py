@@ -1,3 +1,5 @@
+import random
+import numpy as np
 
 Kwadrat = np.array([
 [0,1,2,3,4,5],
