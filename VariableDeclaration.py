@@ -16,38 +16,13 @@ import numpy as np
 import pandas as pd
 
 import stim
+from stim import stim as s
 
 #############
 
 NUM_OBJECTS = 6
 
 ####
-
-Kolory = []
-Kolory.append(stim.stim['circle']['red'])
-Kolory.append(stim.stim['circle']['green'])
-Kolory.append(stim.stim['circle']['yellow'])
-Kolory.append(stim.stim['circle']['blue'])
-Kolory.append(stim.stim['circle']['orange'])
-Kolory.append(stim.stim['circle']['purple'])
-
-# Randomize array Kolory:
-random.shuffle(Kolory)
-
-
-# Generating the Latin Square
-
-Kwadrat = np.array([
-[0,1,2,3,4,5],
-[1,2,3,4,5,0],
-[2,3,1,4,0,5],
-[3,4,2,5,1,0],
-[4,5,0,1,2,3],
-[5,0,4,1,3,2]
-])
-
-N = -1
-
 
 
 #################################
@@ -59,12 +34,6 @@ N = N + 1
 BlockNumber = N + 1
 
 # Definicja nie/kompatybilnosci
-left_comp = Kolory[Kwadrat[N, 0]]
-left_neut = Kolory[Kwadrat[N, 1]]
-left_incomp = Kolory[Kwadrat[N, 2]]
-right_comp = Kolory[Kwadrat[N, 3]]
-right_neut = Kolory[Kwadrat[N, 4]]
-right_incomp = Kolory[Kwadrat[N, 5]]
 
 
 #################################
