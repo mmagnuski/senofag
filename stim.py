@@ -8,6 +8,13 @@ stim_dir = lambda pth : op.join('pic', pth)
 
 win = visual.Window((1200,1000), fullscr=False, monitor='testMonitor', units='deg', color='black') # MUST BE CHANGED (E.G. TO A DEFAULT ONE)
 
+def circle(win, col='green', pos=(0,0), r=2.5):
+    circ = visual.Circle(win, pos=pos, radius=r, edges=128,
+      units='deg', interpolate=True)
+    circ.setFillColor(col)
+    circ.setLineColor(col)
+    return circ
+
 # a list of stimuli images:
 stim = dict()
 stim['win'] = win
@@ -20,9 +27,9 @@ stim['pleft'] = visual.ImageStim(win=win, image=stim_dir('prime_left.png'))
 stim['pright'] = visual.ImageStim(win=win, image=stim_dir('prime_right.png'))
 
 # a list of colors images:
-stim['circle'] = {k: visual.ImageStim(win, image=stim_dir('color_{}.png').format(k)) for k in names}
-stim['circle']['grey'] = visual.ImageStim(win, image=stim_dir('grey.png'))
 colors = ['grey', 'blue', 'red', 'green', 'yellow']
+stim['circle'] = {k: circle(win, col=c) for c in colors}
+stim['circle']['cross'] = visual.ImageStim(win, image=stim_dir('cross.png'))
 
 def whiteshape(v, win = win):      
     return visual.ShapeStim(win,        
