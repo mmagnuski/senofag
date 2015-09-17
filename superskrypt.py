@@ -4,14 +4,6 @@ import numpy as np
 import pandas as pd
 import os
 
-# ustawianie
-# pth = r'C:\Users\LEON-NETB\Dropbox\eksperymentLC_final'
-# fl = 'test.txt'
-# fullfl = os.path.join(pth, fl)
-
-# wczytywanie pliku
-# print 'wczytywanie pliku:\n{}'.format(fullfl)
-# df = pd.read_table(fullfl, sep='\t')
 
 def ischar(x):
         return isinstance(x, str)
@@ -61,14 +53,28 @@ def give_coldict(df):
                 coldict[col] = 'comp' if d.loc[i, 'Prime'] == \
                     d.loc[i, 'TargetSlide.RESP'] else 'incomp'
                 coldict[col] += '_' + d.loc[i, 'TargetSlide.RESP']
-
     # set rest to neut ! CHANGE HERE to neut_l and neut_r !
-    for col in colors:
-        coldict[col] = 'neut'
+            if d.loc[i, 'TrialType'] == 'neut':
+                colors.pop(colors.index(col))
+                coldict[col] = 'neut_r' if d.loc[i, 'TargetSlide.RESP'] == 'r' else 'neut_l'
     return coldict
 
+def firstletter(df, col):
+    if isinstance(col, int):
+        for i in range(df.shape[0]):
+            try:
+                df.iloc[i, col] = df.iloc[i, col].split('.')[0].split('_')[1][0]
+            except:
+                continue
+    elif isinstance(col, str):
+        for i in df.index:
+            try:
+                df.loc[i, col] = df.loc[i, col].split('.')[0].split('_')[1][0]
+            except:
+                continue
 
-def get_block_list(df, n = 9):
+
+def get_block_list(df, n = 11):
     '''
     Gives list of unique block numbers that correspond
     to at least n rows in the passed dataframe.
