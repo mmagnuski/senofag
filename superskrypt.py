@@ -136,3 +136,54 @@ def get_color_info(df):
             rt = rating[col_ind]
             rating_dict[cond].append(rt)
     return rating_dict
+
+
+##############################################################
+# Adding RT to the DataFrame:
+
+def get_RT(df):
+    rr = all_colors(df)
+    cols = ['Block', 'Effect', 'Prime', 'Target', 'TargetSlide.RESP', 'TrialType', 'TargetSlide.RT', 'Condition', 
+        'comp_r_RT', 'comp_l_RT', 'incomp_r_RT', 'incomp_l_RT', 'neut_r_RT', 'neut_l_RT', 'comp_RT', 
+        'incomp_RT', 'neut_RT']
+    rt = df.loc[:, cols]
+    def get_first_char(x):
+        if not pd.isnull(x):
+            return x.split('_')[1][0]
+
+    for i in rt.index:
+        rt.loc[i, 'Effect'] = get_first_char(rt.loc[i, 'Effect'])
+
+    ind = rt.loc[:, 'Effect'].isnull()
+    dff = rt.loc[~ind, :]
+
+    mapping = {'l' : 'r', 'd' : 'l'}
+    def use_map(x, mp = mapping):
+        return mp[x]
+
+    dff.loc[:, 'TargetSlide.RESP'] = dff.loc[:, 'TargetSlide.RESP'].map(use_map)
+    dff.reset_index(inplace=True, drop=True)
+
+    for block in dff.Block.unique():
+        mapping = rr[block]
+        block_df = dff.query('Block == {}'.format(block))
+        al_colors = dff.Effect.unique()
+        for c in al_colors:
+            ind = block_df.Effect == c
+            block_df.loc[ind, 'Condition'] = mapping[c]
+            dff.loc[dff['Block'] == block, 'Condition'] = block_df.loc[block_df['Block'] == block, 'Condition']
+    
+    cond_list = ['comp_r', 'comp_l', 'incomp_r', 'incomp_l', 'neut_r', 'neut_l']
+    for item in cond_list:
+        dff.loc[:, '{}'.format(item+'_RT')] = np.mean(dff.loc[dff['Condition'] == item, 'TargetSlide.RT'])
+
+    rt_base = pd.DataFrame()
+    for item in cond_list:
+        rt_base.loc[1, '{}'.format(item+'_RT')] = dff.loc[1, '{}'.format(item+'_RT')]
+
+    for c in rt_base.columns:
+        for i in rt_base.index:
+            rt_base.loc[i, 'comp_RT'] = (rt_base.loc[i, 'comp_l_RT']+rt_base.loc[i, 'comp_r_RT'])/2
+            rt_base.loc[i, 'incomp_RT'] = (rt_base.loc[i, 'incomp_l_RT']+rt_base.loc[i, 'incomp_r_RT'])/2
+            rt_base.loc[i, 'neut_RT'] = (rt_base.loc[i, 'neut_l_RT']+rt_base.loc[i, 'neut_r_RT'])/2
+    return rt_base
