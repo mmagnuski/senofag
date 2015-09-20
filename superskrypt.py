@@ -39,7 +39,7 @@ def give_coldict(df):
     d['TargetSlide.RESP'] = d['TargetSlide.RESP'].map(use_map)
 
     # resetujemy index
-    d.reset_index(inplace=True)
+    d.reset_index(inplace=True, drop=True)
 
     # sprawdzamy kolory
     colors = list(d.loc[:,'Effect'].unique())
