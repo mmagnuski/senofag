@@ -1,21 +1,33 @@
 % setify sketch
-chanloc = 'E:\\olga K\\N170\\n170_artykuł\\CODE_eeg_beh\\braintools-master\\chan\\loc\\GSN-HydroCel-65 1.0.sfp'
-EEG = pop_readegi('E:\proj\senofag\data\RAW\MD_03_4_20150924_053115.raw', [],[],'auto');
+
+rawdir = 'C:\Users\Ola\Dropbox\Sarenka\senofag eeg\RAW';
+dtdir = 'E:\Programy\EXP\senofag\data';
+file = 'senofag_02_MC_20150917_044204_1.raw';
+fpath = fullfile(rawdir, file);
+
+bt = fileparts(which('braintools'));
+chanloc = fullfile(bt, '\chan\loc\GSN-HydroCel-65 1.0.sfp');
+
+EEG = pop_readegi(fpath, [],[],'auto');
 EEG=pop_chanedit(EEG, 'load', ...
 	{chanloc, 'filetype', 'autodetect'}, ...
 	'changefield', {68, 'datachan', 0}, ...
 	'setref',{'1:67' 'Cz'});
-[ALLEEG EEG] = eeg_store(ALLEEG, EEG, CURRENTSET);
 
 EEG = pop_eegfiltnew(EEG, [], 1, 826, true, [], 0);
+Cz_ind = find(strcmp('Cz', {EEG.chaninfo.nodatchans.labels}));
+Cz_loc = EEG.chaninfo.nodatchans(Cz_ind);
+Cz_loc.type = '';
+Cz_loc.urchan = 68;
+
 EEG = pop_reref( EEG, [], 'refloc', ...
-	struct('labels', {'Cz'}, ...
-	'Y', {0}, 'X', {6.2205e-16}, 'Z', {10.1588}, 'sph_theta', {0}, ...
-	'sph_phi', {90}, 'sph_radius', {10.1588}, 'theta', {0}, ...
-	'radius', {0}, 'type', {''}, 'ref', {''}, 'urchan', {68}, ...
-	'datachan',{0}), ...
-	'exclude',[17 39 59] );
-[ALLEEG EEG CURRENTSET] = pop_newset(ALLEEG, EEG, 2,'gui','off');
+	Cz_loc, 'exclude', [17, 54]);
+
+% EEG = pop_reref( EEG, [], 'refloc', ...
+% 	Cz_loc, 'exclude',[17 39 59]);
+
+wtimes = csvread(fullfile(dtdir, 's2_wtimes.csv'));
+EEG = senofag_senofag_recode_marks(EEG, wtimes);
 
 % how to get effect events:
 evnt = {EEG.event.type};
