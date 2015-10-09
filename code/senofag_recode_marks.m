@@ -63,6 +63,12 @@ for t = 1:length(targ)
 end
 newevent = newevent(1:all_i);
 EEG.event = [EEG.event, newevent'];
+
+% sort all events by latency:
+lat = [EEG.event.latency];
+[~, ord] = sort(lat);
+EEG.event = EEG.event(ord);
+
 end
 
 % merge all_new_event, and add
