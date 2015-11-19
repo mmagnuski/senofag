@@ -45,7 +45,7 @@ def get_block(blockNum, prop=0, exp=exp):
 	columns=['block', 'cond', 'choiceType', 'fixTime', 'prime', 'target',
 		'effect', 'pos', 'corrResp', 'resp', 'ifcorr']
 	dtp = ['int32', 'category', 'category', 'int32', 'category', 'category',
-		'category', 'float64', 'category', 'category', 'bool']
+		'object', 'float64', 'object', 'object', 'bool']
 
 	template = pd.read_excel('block_list.xls')
 	temp_cols = [c for c in columns if c in template.columns]

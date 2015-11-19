@@ -28,7 +28,7 @@ stim['pright'] = visual.ImageStim(win=win, image=stim_dir('prime_right.png'))
 
 # a list of colors images:
 colors = ['grey', 'blue', 'red', 'green', 'yellow']
-stim['circle'] = {k: circle(win, col=c) for c in colors}
+stim['circle'] = {c: circle(win, col=c) for c in colors}
 stim['circle']['cross'] = visual.ImageStim(win, image=stim_dir('cross.png'))
 
 def whiteshape(v, win = win):      
