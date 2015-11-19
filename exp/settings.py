@@ -34,7 +34,7 @@ def get_colors_from_square(colors, N, exp=exp):
 
 def shuffle_rows(df):
 	df = df.reset_index(drop=True)
-	ind = range(len(df))
+	ind = list(range(len(df)))
 	random.shuffle(ind)
 	df = df.loc[ind, :]
 	df = df.reset_index(drop=True)
