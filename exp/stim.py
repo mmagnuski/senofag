@@ -92,10 +92,22 @@ def show_trial(df, stim, tri):
     for f in stim['fix']:
         f.autoDraw = False
 
+    # evaluate repsonse
+    eval_resp(df, tri, k)
+
     for _ in range(30):
         stim['circle'][df.loc[tri, 'effect']].draw()
         stim['win'].flip()
         
-
+def eval_resp(df, t, k):
+  if len(k) == 0:
+    k = 'NoResp'
+    df.loc[t, 'effect'] = 'cross'
+    df.loc[t, 'resp'] = k
+  else:
+    df.loc[t, 'resp'] = k[0]
+    df.loc[t, 'ifcorr'] = k[0] in df.loc[t, 'corrResp']
+    if not df.loc[t, 'ifcorr']:
+      df.loc[t, 'effect'] = 'cross'
 
 
