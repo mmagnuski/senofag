@@ -18,13 +18,18 @@ def circle(win, col='green', pos=(0,0), r=2.5):
 # a list of stimuli images:
 stim = dict()
 stim['win'] = win
-stim['tleft'] = visual.ImageStim(win=win, image=stim_dir('target_left.png'))
-stim['tright'] = visual.ImageStim(win=win, image=stim_dir('target_right.png'))
-stim['tboth'] = visual.ImageStim(win=win, image=stim_dir('target_both.png'))
+stim['target_left.png'] = visual.ImageStim(
+    win=win, image=stim_dir('target_left.png'))
+stim['target_right.png'] = visual.ImageStim(
+    win=win, image=stim_dir('target_right.png'))
+stim['target_both.png'] = visual.ImageStim(
+    win=win, image=stim_dir('target_both.png'))
 
 # a list of primes images:
-stim['pleft'] = visual.ImageStim(win=win, image=stim_dir('prime_left.png'))
-stim['pright'] = visual.ImageStim(win=win, image=stim_dir('prime_right.png'))
+stim['prime_left.png'] = visual.ImageStim(
+    win=win, image=stim_dir('prime_left.png'))
+stim['prime_right.png'] = visual.ImageStim(
+    win=win, image=stim_dir('prime_right.png'))
 
 # a list of colors images:
 colors = ['grey', 'blue', 'red', 'green', 'yellow']
