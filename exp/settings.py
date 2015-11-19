@@ -12,8 +12,8 @@ Kwadrat = np.array([
 exp = dict()
 exp['kwadrat'] = Kwadrat
 exp['buttons'] = ['l', 'd']
-exp['block trials'] = 72
-exp['proportions'] = [(9,3), (3,9)] # can change - num of trials
+exp['block trials'] = 72 # actually, jest 48 przy obecnym prop
+exp['proportions'] = [(9,3), (3,9)] # can change
 
 # experimental basic deaths (defs):
 def shuffle_colors(stim):

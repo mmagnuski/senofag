@@ -6,7 +6,9 @@ from os import path as op
 
 stim_dir = lambda pth : op.join('pic', pth)
 
-win = visual.Window((1200,1000), fullscr=False, monitor='testMonitor', units='deg', color='black') # MUST BE CHANGED (E.G. TO A DEFAULT ONE)
+win = visual.Window((1200,1000),
+    fullscr=False, monitor='testMonitor',
+    units='deg', color='black') # MUST BE CHANGED (E.G. TO A DEFAULT ONE)
 
 def circle(win, col='green', pos=(0,0), r=2.5):
     circ = visual.Circle(win, pos=pos, radius=r, edges=128,
