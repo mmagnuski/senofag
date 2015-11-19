@@ -29,7 +29,7 @@ def shuffle_colors(stim):
 
 def get_colors_from_square(colors, N, exp=exp):
 	names = ['lc', 'li', 'rc', 'ri']
-	cond_colors = {cnd: colors[exp['kwadrat'][N, i]] 
+	return {cnd: colors[exp['kwadrat'][N, i]]
 		for i, cnd in enumerate(names)}
 
 def shuffle_rows(df):
