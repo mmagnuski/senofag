@@ -1,12 +1,10 @@
 import os
 from os import path as op
+from PIL import Image
 
 import numpy as np
 from psychopy import core, visual, event, monitors
 
-win = visual.Window((1200,1000),
-    fullscr=False, monitor='testMonitor',
-    units='deg', color='black') # MUST BE CHANGED (E.G. TO A DEFAULT ONE)
 
 def circle(win, col='green', pos=(0,0), r=2.5):
     circ = visual.Circle(win, pos=pos, radius=r, edges=128, units='deg',
@@ -14,27 +12,6 @@ def circle(win, col='green', pos=(0,0), r=2.5):
     circ.setFillColor(col)
     circ.setLineColor(col)
     return circ
-
-# a list of stimuli images:
-stim = dict()
-stim['win'] = win
-stim['target_left.png'] = visual.ImageStim(
-    win=win, image=stim_dir('target_left.png'))
-stim['target_right.png'] = visual.ImageStim(
-    win=win, image=stim_dir('target_right.png'))
-stim['target_both.png'] = visual.ImageStim(
-    win=win, image=stim_dir('target_both.png'))
-
-# a list of primes images:
-stim['prime_left.png'] = visual.ImageStim(
-    win=win, image=stim_dir('prime_left.png'))
-stim['prime_right.png'] = visual.ImageStim(
-    win=win, image=stim_dir('prime_right.png'))
-
-# a list of colors images:
-colors = ['grey', 'blue', 'red', 'green', 'yellow']
-stim['circle'] = {c: circle(win, col=c) for c in colors}
-stim['circle']['cross'] = visual.ImageStim(win, image=stim_dir('cross.png'))
 
 
 def whiteshape(v, win=None):
@@ -50,7 +27,32 @@ def fix(ln=1, lw=0.1, win=None):
     fix.append(whiteshape(np.fliplr(v), win=win))
     return fix
 
-stim['fix'] = fix()
+
+def resized_image(win=None, image=None, scale=1, **kwargs):
+    img = Image.open(image)
+    image_size = np.array([img.width, img.height])
+    image_size = np.round(image_size * scale).astype('int')
+    return visual.ImageStim(win=win, image=image, units='pix',
+                            size=image_size, **kwargs)
+
+
+def create_stimuli(fullscr=False):
+    # create window (MUST BE CHANGED (E.G. TO A DEFAULT ONE))
+    window = visual.Window((1200, 1000), fullscr=False, monitor='testMonitor',
+                           units='deg', color='black')
+
+    # a list of stimuli images:
+    stim = {image: resized_image(win=window, image=op.join('pic', image),
+                                 scale=0.5) for image in os.listdir('pic')}
+    stim['win'] = window
+    stim['fix'] = fix(win=window)
+
+    # a list of colors images:
+    colors = ['grey', 'blue', 'red', 'green', 'yellow']
+    stim['circle'] = {c: circle(window, col=c) for c in colors}
+    stim['circle']['cross'] = stim['cross.png']
+    return stim
+
 
 def show_trial(df, stim, trial, effect_colors=None):
     # show fixation
