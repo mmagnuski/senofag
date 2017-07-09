@@ -57,6 +57,7 @@ def create_stimuli(fullscr=False):
 def show_trial(df, stim, trial, effect_colors=None):
     # show fixation
     fix_frames = df.loc[trial, 'fixTime']
+
     for f in stim['fix']:
         f.autoDraw = True
 
