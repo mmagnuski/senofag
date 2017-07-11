@@ -75,7 +75,7 @@ def show_trial(df, stim, trial, effect_colors=None):
     stim[df.loc[trial, 'prime']].draw()
     stim['win'].flip()
 
-    # show target
+    # clear keybord buffer, show target
     event.getKeys()
     for _ in range(25):
         stim[df.loc[trial, 'target']].draw()
@@ -106,6 +106,9 @@ def show_trial(df, stim, trial, effect_colors=None):
         stim['win'].flip()
 
     # save responses to df
+    df.loc[trial, 'soa_rating'] = stim['rating scale'].getRating()
+    df.loc[trial, 'rating_RT'] = stim['rating scale'].getRT()
+
     # post-trial random interval?
 
 

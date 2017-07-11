@@ -54,9 +54,9 @@ def create_block(blockNum, settings=None):
 
 	# define column names and dtypes
 	columns=['block', 'cond', 'choiceType', 'fixTime', 'prime', 'target',
-			 'effect', 'pos', 'corrResp', 'resp', 'ifcorr']
+			 'effect', 'pos', 'corrResp', 'resp', 'ifcorr', 'RT', 'soa_rating', 'rating_RT']
 	dtp = ['int32', 'category', 'category', 'int32', 'category', 'category',
-		   'object', 'float64', 'object', 'object', 'bool']
+		   'object', 'float64', 'object', 'object', 'bool', 'float64', 'int16', 'float64']
 
 	# read template and select columns
 	template = pd.read_excel('block_list.xls')
