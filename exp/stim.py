@@ -63,7 +63,10 @@ def create_stimuli(fullscr=False):
     return stim
 
 
-def show_trial(df, stim, trial, effect_colors=None):
+def show_trial(df, stim, trial, effect_colors=None, resp_clock=None):
+    if resp_clock is None:
+        resp_clock = core.Clock()
+
     # show fixation
     fix_frames = df.loc[trial, 'fixTime']
 
@@ -79,22 +82,23 @@ def show_trial(df, stim, trial, effect_colors=None):
 
     # clear keybord buffer, show target
     event.getKeys()
-    for _ in range(25):
+    for frame in range(25):
         stim[df.loc[trial, 'target']].draw()
         stim['win'].flip()
+        if frame == 0:
+            resp_clock.reset()
 
-    # 1500 ms for response
-    for _ in range(150):
-        key = event.getKeys()
-        if key:
-            break
-        stim['win'].flip()
+    keys = event.getKeys(keyList=['f', 'j'], timeStamped=resp_clock)
+    if keys is None or len(keys) == 0:
+        # 1500 ms for response if not already given
+        keys = event.waitKeys(keyList=['f', 'j'], timeStamped=resp_clock,
+                              maxWait=1.5)
 
     for f in stim['fix']:
         f.autoDraw = False
 
     # evaluate repsonse
-    eval_resp(df, trial, key, effect_colors=effect_colors)
+    eval_resp(df, trial, keys, effect_colors=effect_colors)
 
     # show effect
     for _ in range(30):
@@ -114,17 +118,19 @@ def show_trial(df, stim, trial, effect_colors=None):
     # post-trial random interval?
 
 
-def eval_resp(df, trial, key, effect_colors=None):
-    if len(key) == 0:
-        key = 'NoResp'
+def eval_resp(df, trial, keys, effect_colors=None):
+    if len(keys) == 0:
+        keys = 'NoResp'
         df.loc[trial, 'effect'] = 'cross'
-        df.loc[trial, 'resp'] = key
+        df.loc[trial, 'resp'] = keys
+        df.loc[trial, 'RT'] = np.nan
     else:
-        df.loc[trial, 'resp'] = key[0]
-        df.loc[trial, 'ifcorr'] = key[0] in df.loc[trial, 'corrResp']
+        df.loc[trial, 'resp'] = keys[0][0]
+        df.loc[trial, 'RT'] = keys[0][1]
+        df.loc[trial, 'ifcorr'] = keys[0][0] in df.loc[trial, 'corrResp']
         if not df.loc[trial, 'ifcorr']:
             df.loc[trial, 'effect'] = 'cross'
         else:
-            used_hand = 'l' if key == 'f' else 'r'
+            used_hand = 'l' if keys == 'f' else 'r'
             condition = 'c' if used_hand == df.loc[trial, 'prime'][6] else 'i'
             df.loc[trial, 'effect'] = effect_colors[used_hand + condition]
