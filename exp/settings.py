@@ -21,6 +21,9 @@ def create_settings():
 	settings['block trials'] = 72 # czy to jest w ogóle używane?
 	settings['proportions'] = [(9, 3), (3, 9)]
 
+	# fixTime is given in frames, in seconds that would be (1., 1.5)
+	settings['fix time range'] =  (100, 150)
+
 	return settings
 
 
@@ -85,6 +88,12 @@ def create_block(blockNum, settings=None):
 	for c in temp_cols:
 		df[c] = 0
 	df['block'] = blockNum
+
+	# add fixTime
+	n_rows = df.shape[0]
+	tmin, tmax = settings['fix time range']
+	tmax += 1 # because randint high is exclusive
+	df.loc[:, 'fixTime'] = np.random.randint(low=tmin, high=tmax, size=n_rows)
 
 	# make sure dtypes are correct
 	for col, tp in zip(columns, dtp):
