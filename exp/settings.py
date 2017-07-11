@@ -46,6 +46,8 @@ def shuffle_rows(df):
 	ind = list(range(len(df)))
 	random.shuffle(ind)
 	df = df.loc[ind, :]
+	
+	# make sure index starts at 1
 	df = df.reset_index(drop=True)
 	df.index = df.index + 1
 	return df
@@ -69,7 +71,8 @@ def create_block(blockNum, settings=None):
 	n_rows = template.shape[0]
 	template = pd.concat([template, template])
 	template.loc[:, 'pos'] = 0.7  # top
-	template.iloc[:n_rows, 'pos'] = -0.7 # bottom
+	pos_column_index = template.columns.tolist().index('pos')
+	template.iloc[:n_rows, pos_column_index] = -0.7 # bottom
 
 	# proportion of trials of Cued vs Free type
 	prop = random.choice(settings['proportions'])
