@@ -51,6 +51,13 @@ def create_stimuli(fullscr=False):
     colors = ['grey', 'blue', 'red', 'green', 'yellow']
     stim['circle'] = {c: circle(window, col=c) for c in colors}
     stim['circle']['cross'] = stim['cross.png']
+
+    # create rating scale
+    navig = dict(leftKeys='f', rightKeys = 'j', acceptKeys='space',
+                 low=1, high=7, markerStart=4, markerColor='seagreen')
+
+    stim['rating scale'] = visual.RatingScale(window, **navig)
+
     return stim
 
 
@@ -91,6 +98,15 @@ def show_trial(df, stim, trial, effect_colors=None):
     for _ in range(30):
         stim['circle'][df.loc[trial, 'effect']].draw()
         stim['win'].flip()
+
+    # rate sense of agency
+    stim['rating scale'].reset()
+    while stim['rating scale'].noResponse:
+        stim['rating scale'].draw()
+        stim['win'].flip()
+
+    # save responses to df
+    # post-trial random interval?
 
 
 def eval_resp(df, trial, key, effect_colors=None):
