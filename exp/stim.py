@@ -30,7 +30,7 @@ def fix(ln=1, lw=0.1, win=None):
 
 def resized_image(win=None, image=None, scale=1, **kwargs):
     img = Image.open(image)
-    image_size = np.array([img.width, img.height])
+    image_size = np.array(img.size)
     image_size = np.round(image_size * scale).astype('int')
     return visual.ImageStim(win=win, image=image, units='pix',
                             size=image_size, **kwargs)
