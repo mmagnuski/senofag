@@ -67,7 +67,7 @@ def create_block(blockNum, settings=None):
 	n_rows = template.shape[0]
 	template = pd.concat([template, template])
 	template.loc[:, 'pos'] = 0.7  # top
-	template.iloc[:n_rows] = -0.7 # bottom
+	template.iloc[:n_rows, 'pos'] = -0.7 # bottom
 
 	# proportion of trials of Cued vs Free type
 	prop = random.choice(settings['proportions'])
