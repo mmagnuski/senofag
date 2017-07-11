@@ -51,6 +51,15 @@ def create_stimuli(fullscr=False):
     colors = ['grey', 'blue', 'red', 'green', 'yellow']
     stim['circle'] = {c: circle(window, col=c) for c in colors}
     stim['circle']['cross'] = stim['cross.png']
+
+    # create rating scale
+    navig = dict(leftKeys='f', rightKeys = 'j', acceptKeys='space',
+                 low=1, high=7, markerStart=4, markerColor='seagreen',
+                 showValue=False, showAccept=False, pos=(0., 0.),
+                 scale='', labels=['niskie', 'wysokie'])
+
+    stim['rating scale'] = visual.RatingScale(window, **navig)
+
     return stim
 
 
@@ -68,7 +77,7 @@ def show_trial(df, stim, trial, effect_colors=None):
     stim[df.loc[trial, 'prime']].draw()
     stim['win'].flip()
 
-    # show target
+    # clear keybord buffer, show target
     event.getKeys()
     for _ in range(25):
         stim[df.loc[trial, 'target']].draw()
@@ -87,9 +96,22 @@ def show_trial(df, stim, trial, effect_colors=None):
     # evaluate repsonse
     eval_resp(df, trial, key, effect_colors=effect_colors)
 
+    # show effect
     for _ in range(30):
         stim['circle'][df.loc[trial, 'effect']].draw()
         stim['win'].flip()
+
+    # rate sense of agency
+    stim['rating scale'].reset()
+    while stim['rating scale'].noResponse:
+        stim['rating scale'].draw()
+        stim['win'].flip()
+
+    # save responses to df
+    df.loc[trial, 'soa_rating'] = stim['rating scale'].getRating()
+    df.loc[trial, 'rating_RT'] = stim['rating scale'].getRT()
+
+    # post-trial random interval?
 
 
 def eval_resp(df, trial, key, effect_colors=None):
@@ -103,6 +125,6 @@ def eval_resp(df, trial, key, effect_colors=None):
         if not df.loc[trial, 'ifcorr']:
             df.loc[trial, 'effect'] = 'cross'
         else:
-            used_hand = 'l' if key == 'd' else 'r'
+            used_hand = 'l' if key == 'f' else 'r'
             condition = 'c' if used_hand == df.loc[trial, 'prime'][6] else 'i'
             df.loc[trial, 'effect'] = effect_colors[used_hand + condition]
