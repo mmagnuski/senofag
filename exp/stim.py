@@ -38,7 +38,7 @@ def resized_image(win=None, image=None, scale=1, **kwargs):
 
 def create_stimuli(fullscr=False):
     # create window (MUST BE CHANGED (E.G. TO A DEFAULT ONE))
-    window = visual.Window((1200, 1000), fullscr=False, monitor='testMonitor',
+    window = visual.Window((1200, 1000), fullscr=fullscr, monitor='testMonitor',
                            units='deg', color='black')
 
     # a list of stimuli images:
