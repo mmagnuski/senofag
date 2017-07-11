@@ -67,6 +67,10 @@ def show_trial(df, stim, trial, effect_colors=None, resp_clock=None):
     if resp_clock is None:
         resp_clock = core.Clock()
 
+    # set pos
+    stim[df.loc[trial, 'prime']].pos = (0., df.loc[trial, 'pos'])
+    stim[df.loc[trial, 'target']].pos = (0., df.loc[trial, 'pos'])
+
     # show fixation
     fix_frames = df.loc[trial, 'fixTime']
 

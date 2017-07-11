@@ -73,9 +73,9 @@ def create_block(blockNum, settings=None):
 	# add position - top / bottom
 	n_rows = template.shape[0]
 	template = pd.concat([template, template])
-	template.loc[:, 'pos'] = 0.7  # top
+	template.loc[:, 'pos'] = 250  # top
 	pos_column_index = template.columns.tolist().index('pos')
-	template.iloc[:n_rows, pos_column_index] = -0.7 # bottom
+	template.iloc[:n_rows, pos_column_index] = -250 # bottom
 
 	# proportion of trials of Cued vs Free type
 	prop = random.choice(settings['proportions'])
