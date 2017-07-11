@@ -87,6 +87,7 @@ def show_trial(df, stim, trial, effect_colors=None):
     # evaluate repsonse
     eval_resp(df, trial, key, effect_colors=effect_colors)
 
+    # show effect
     for _ in range(30):
         stim['circle'][df.loc[trial, 'effect']].draw()
         stim['win'].flip()
@@ -103,6 +104,6 @@ def eval_resp(df, trial, key, effect_colors=None):
         if not df.loc[trial, 'ifcorr']:
             df.loc[trial, 'effect'] = 'cross'
         else:
-            used_hand = 'l' if key == 'd' else 'r'
+            used_hand = 'l' if key == 'f' else 'r'
             condition = 'c' if used_hand == df.loc[trial, 'prime'][6] else 'i'
             df.loc[trial, 'effect'] = effect_colors[used_hand + condition]
