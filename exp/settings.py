@@ -1,5 +1,5 @@
 # encoding: utf-8
-
+import os
 import random
 import numpy as np
 import pandas as pd
@@ -13,6 +13,8 @@ def create_settings():
 
 	settings = dict()
 	settings['kwadrat'] = Kwadrat
+	settings['exp dir'] = os.path.dirname(__file__)
+	settings['data dir'] = os.path.join(settings['exp dir'], 'data')
 
 	# CHANGE:
 	settings['buttons'] = ['l', 'd']
