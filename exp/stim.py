@@ -54,7 +54,9 @@ def create_stimuli(fullscr=False):
 
     # create rating scale
     navig = dict(leftKeys='f', rightKeys = 'j', acceptKeys='space',
-                 low=1, high=7, markerStart=4, markerColor='seagreen')
+                 low=1, high=7, markerStart=4, markerColor='seagreen',
+                 showValue=False, showAccept=False, pos=(0., 0.),
+                 scale='', labels=['niskie', 'wysokie'])
 
     stim['rating scale'] = visual.RatingScale(window, **navig)
 
