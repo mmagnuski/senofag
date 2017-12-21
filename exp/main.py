@@ -1,11 +1,17 @@
-import settings as st
-from stim import stim
+import os
+from settings import create_settings, create_block, get_colors_from_square
+from stim import create_stimuli, show_trial
 
-blck = st.get_block(0)
-colors = st.shuffle_colors(stim)
+settings = create_settings()
+stim = create_stimuli(fullscr=True)
+# colors = st.shuffle_colors(stim)
 
-N = 0
-cond2color = get_colors_from_square(colors, N)
+block_number = 0
+blck = create_block(block_number, settings=settings)
+colors = ['red', 'green', 'yellow', 'blue']
+cond_color = get_colors_from_square(colors, block_number, settings=settings)
+data_fname = 'test_subject_block_{}.csv'.format(block_number)
 
-for t in range(1, 4):
-	stim.show_trial(blck, stim.stim, t)
+for trial in range(1, 6):
+	show_trial(blck, stim, trial, effect_colors=cond_color)
+	blck.to_csv(os.path.join(settings['data dir'], data_fname))
