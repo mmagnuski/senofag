@@ -107,59 +107,55 @@ def show_trial(df, stim, trial, effect_colors=None, resp_clock=None):
     if resp_clock is None:
         resp_clock = core.Clock()
 
-    # set pos
-    stim[df.loc[trial, 'prime']].pos = (0., df.loc[trial, 'pos'])
-    stim[df.loc[trial, 'target']].pos = (0., df.loc[trial, 'pos'])
+    # get stimuli
+    fix = stim['fix']
+    window = stim['win']
+    prime = stim[df.loc[trial, 'prime']]
+    target = stim[df.loc[trial, 'target']]
+    circle = stim['circle'][df.loc[trial, 'effect']]
+
+    # set position
+    prime.pos = (0., df.loc[trial, 'pos'])
+    target.pos = (0., df.loc[trial, 'pos'])
 
     # show fixation
     fix_frames = df.loc[trial, 'fixTime']
-
-    for f in stim['fix']:
-        f.autoDraw = True
-
-    for _ in range(fix_frames):
-        stim['win'].flip()
+    show_stim(window=window, stimuli=fix, n_frames=fix_frames)
 
     # show prime
-    stim[df.loc[trial, 'prime']].draw()
-    stim['win'].flip()
+    prime.draw()
+    window.flip()
 
-    # clear keybord buffer, show target
+    # clear keybord buffer, show target (TODO: add Trigger)
     event.getKeys()
-    for frame in range(25):
-        stim[df.loc[trial, 'target']].draw()
-        stim['win'].flip()
-        if frame == 0:
-            resp_clock.reset()
+    show_stim(window=window, stimuli=fix + target, n_frames=25,
+              resp_clock=resp_clock)
 
+    # get response
     keys = event.getKeys(keyList=['f', 'j'], timeStamped=resp_clock)
+    # 1500 ms for response if not already given
     if keys is None or len(keys) == 0:
-        # 1500 ms for response if not already given
         keys = event.waitKeys(keyList=['f', 'j'], timeStamped=resp_clock,
                               maxWait=1.5)
-
-    for f in stim['fix']:
-        f.autoDraw = False
 
     # evaluate repsonse
     eval_resp(df, trial, keys, effect_colors=effect_colors)
 
-    # show effect
-    for _ in range(30):
-        stim['circle'][df.loc[trial, 'effect']].draw()
-        stim['win'].flip()
+    # show effect (TODO: add Trigger)
+    show_stim(window=window, stimuli=circle, n_frames=30)
 
-    # rate sense of agency
+    # rate sense of agency (TODO: set maxWait?)
     stim['rating scale'].reset()
     while stim['rating scale'].noResponse:
         stim['rating scale'].draw()
-        stim['win'].flip()
+        window.flip()
 
     # save responses to df
     df.loc[trial, 'soa_rating'] = stim['rating scale'].getRating()
     df.loc[trial, 'rating_RT'] = stim['rating scale'].getRT()
 
-    # post-trial random interval?
+    # break + post-trial random interval
+    show_break(window)
 
 
 def eval_resp(df, trial, keys, effect_colors=None):
