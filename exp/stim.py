@@ -157,8 +157,8 @@ def show_trial(df, stim, trial, effect_colors=None, resp_clock=None):
     df.loc[trial, 'soa_rating'] = stim['rating scale'].getRating()
     df.loc[trial, 'rating_RT'] = stim['rating scale'].getRT()
 
-    # break + post-trial random interval
-    show_break(window)
+    # post-trial random interval
+    # TODO
 
 
 def eval_resp(df, trial, keys, effect_colors=None):
@@ -179,14 +179,12 @@ def eval_resp(df, trial, keys, effect_colors=None):
             df.loc[trial, 'effect'] = effect_colors[used_hand + condition]
 
 
-def show_break(window, df=None, paths=None):
+def show_break(window):
+    # TODO add info about how many trials passed, which block it is ...
     event.getKeys()
     text = visual.TextStim(window, text=u'Aby przejść dalej\nnaciśnij spację')
     text.draw()
     window.flip()
-    if df is not None:
-        # TODO save df
-        pass
 
     # wait for space
     keys = event.getKeys(keyList=['space'])
