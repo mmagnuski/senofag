@@ -3,7 +3,7 @@ from os import path as op
 from PIL import Image
 
 import numpy as np
-from psychopy import core, visual, event, monitors
+from psychopy import core, visual, event, monitors, parallel
 
 
 def circle(win, col='green', pos=(0,0), r=2.5):
@@ -17,6 +17,7 @@ def circle(win, col='green', pos=(0,0), r=2.5):
 def whiteshape(v, win=None):
     return visual.ShapeStim(win, lineWidth=0.5, fillColor=[1, 1, 1],
                             lineColor=[1, 1, 1], vertices=v, closeShape=True)
+
 
 # create fixation cross:
 def fix(ln=1, lw=0.1, win=None):
@@ -34,6 +35,24 @@ def resized_image(win=None, image=None, scale=1, **kwargs):
     image_size = np.round(image_size * scale).astype('int')
     return visual.ImageStim(win=win, image=image, units='pix',
                             size=image_size, **kwargs)
+
+
+class Trigger(object):
+    def __init__(self, port_address, mapping=None):
+        self.port_address = port_address
+        self.mapping = mapping
+        self.frames = list()
+        self.trigger_values = list()
+
+    def set_sequence(self, frames, trigger_values):
+        self.frames = frames
+        self.trigger_values = trigger_values
+
+    def react_to_frame(self, frame_num):
+        if frame_num in self.frames:
+            idx = self.frames.index(frame_num)
+            value = self.trigger_values[idx]
+            # TODO send trigger
 
 
 def create_stimuli(fullscr=False):
