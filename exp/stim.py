@@ -82,6 +82,27 @@ def create_stimuli(fullscr=False):
     return stim
 
 
+# [ ] triggers could be sent by onFlip function, then reset on other frames
+def show_stim(window, stimuli=None, n_frames=10, resp_clock=None, trigger=None):
+    if stimuli is None:
+        stimuli = list()
+    elif not isinstance(stimuli, list):
+        stimuli = [stimuli]
+
+    for frame in range(n_frames):
+        for stim in stimuli:
+            stim.draw()
+        window.flip()
+
+        # check if trigger object has something to say
+        if trigger is not None:
+            trigger.react_to_frame(frame)
+
+        # reset response clock if it is the first frame
+        if frame == 0 and resp_clock is not None:
+            resp_clock.reset()
+
+
 def show_trial(df, stim, trial, effect_colors=None, resp_clock=None):
     if resp_clock is None:
         resp_clock = core.Clock()
