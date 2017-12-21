@@ -1,3 +1,5 @@
+# encoding: utf-8
+
 import os
 from os import path as op
 from PIL import Image
@@ -112,7 +114,6 @@ def show_trial(df, stim, trial, effect_colors=None, resp_clock=None):
     window = stim['win']
     prime = stim[df.loc[trial, 'prime']]
     target = stim[df.loc[trial, 'target']]
-    circle = stim['circle'][df.loc[trial, 'effect']]
 
     # set position
     prime.pos = (0., df.loc[trial, 'pos'])
@@ -128,7 +129,7 @@ def show_trial(df, stim, trial, effect_colors=None, resp_clock=None):
 
     # clear keybord buffer, show target (TODO: add Trigger)
     event.getKeys()
-    show_stim(window=window, stimuli=fix + target, n_frames=25,
+    show_stim(window=window, stimuli=fix + [target], n_frames=25,
               resp_clock=resp_clock)
 
     # get response
@@ -140,6 +141,8 @@ def show_trial(df, stim, trial, effect_colors=None, resp_clock=None):
 
     # evaluate repsonse
     eval_resp(df, trial, keys, effect_colors=effect_colors)
+    circle = stim['circle'][df.loc[trial, 'effect']]
+
 
     # show effect (TODO: add Trigger)
     show_stim(window=window, stimuli=circle, n_frames=30)
@@ -159,7 +162,7 @@ def show_trial(df, stim, trial, effect_colors=None, resp_clock=None):
 
 
 def eval_resp(df, trial, keys, effect_colors=None):
-    if len(keys) == 0:
+    if keys is None or len(keys) == 0:
         keys = 'NoResp'
         df.loc[trial, 'effect'] = 'cross'
         df.loc[trial, 'resp'] = keys
@@ -183,6 +186,7 @@ def show_break(window, df=None, paths=None):
     window.flip()
     if df is not None:
         # TODO save df
+        pass
 
     # wait for space
     keys = event.getKeys(keyList=['space'])
