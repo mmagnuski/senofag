@@ -178,3 +178,25 @@ def eval_resp(df, trial, keys, effect_colors=None):
             used_hand = 'l' if keys == 'f' else 'r'
             condition = 'c' if used_hand == df.loc[trial, 'prime'][6] else 'i'
             df.loc[trial, 'effect'] = effect_colors[used_hand + condition]
+
+
+def show_break(window, df=None, paths=None):
+    event.getKeys()
+    text = visual.TextStim(window, text=u'Aby przejść dalej\nnaciśnij spację')
+    text.draw()
+    window.flip()
+    if df is not None:
+        # TODO save df
+
+    # wait for space
+    keys = event.getKeys(keyList=['space'])
+    # 1500 ms for response if not already given
+    if keys is None or len(keys) == 0:
+        keys = event.waitKeys(keyList=['space'])
+
+    # TODO random wait after break
+
+
+def run_block():
+    # TODO
+    pass
