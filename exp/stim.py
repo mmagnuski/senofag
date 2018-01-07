@@ -42,7 +42,7 @@ def resized_image(win=None, image=None, scale=1, **kwargs):
 class Trigger(object):
     def __init__(self, port_address, mapping=None):
         self.port_address = port_address
-        self.mapping = mapping
+        self.mapping = mapping # is that used at all?
         self.frames = list()
         self.trigger_values = list()
 
@@ -58,7 +58,7 @@ class Trigger(object):
 
 
 def create_stimuli(fullscr=False):
-    # create window (MUST BE CHANGED (E.G. TO A DEFAULT ONE))
+    # TODO create window (MUST BE CHANGED (E.G. TO A DEFAULT ONE))
     window = visual.Window((1200, 1000), fullscr=fullscr, monitor='testMonitor',
                            units='deg', color='black')
 
@@ -105,6 +105,8 @@ def show_stim(window, stimuli=None, n_frames=10, resp_clock=None, trigger=None):
             resp_clock.reset()
 
 
+# show_trial could get Trigger from the outside as kwarg,
+# else create one if None...
 def show_trial(df, stim, trial, effect_colors=None, resp_clock=None):
     if resp_clock is None:
         resp_clock = core.Clock()
@@ -192,7 +194,7 @@ def eval_resp(df, trial, keys, effect_colors=None):
 
 
 def show_break(window):
-    # TODO add info about how many trials passed, which block it is ...
+    # TODO add info about how many trials passed, which block it is ...?
     event.getKeys()
     text = visual.TextStim(window, text=u'Aby przejść dalej\nnaciśnij spację')
     text.draw()
