@@ -123,9 +123,9 @@ def show_trial(df, stim, trial, effect_colors=None, resp_clock=None):
     fix_frames = df.loc[trial, 'fixTime']
     show_stim(window=window, stimuli=fix, n_frames=fix_frames)
 
-    # show prime
-    prime.draw()
-    window.flip()
+    # show prime (TODO: add Trigger to prime)
+    show_stim(window=window, stimuli=fix + [prime], n_frames=2)
+    show_stim(window=window, stimuli=fix, n_frames=4)
 
     # clear keybord buffer, show target (TODO: add Trigger)
     event.getKeys()
@@ -137,15 +137,25 @@ def show_trial(df, stim, trial, effect_colors=None, resp_clock=None):
     # 1500 ms for response if not already given
     if keys is None or len(keys) == 0:
         keys = event.waitKeys(keyList=['f', 'j'], timeStamped=resp_clock,
-                              maxWait=1.5)
+                              maxWait=1.2)
 
     # evaluate repsonse
     eval_resp(df, trial, keys, effect_colors=effect_colors)
     circle = stim['circle'][df.loc[trial, 'effect']]
 
+    # delay 1 (jittered 40 - 60 frames)
+    # high is 61 because randint upper limit is exclusive
+    delay_frames = np.random.randint(low=40, high=61)
+    show_stim(window=window, stimuli=None, n_frames=delay_frames)
+    df.loc[trial, 'delay1'] = delay_frames
 
     # show effect (TODO: add Trigger)
-    show_stim(window=window, stimuli=circle, n_frames=30)
+    show_stim(window=window, stimuli=circle, n_frames=25)
+
+    # delay 2 (jittered 75 - 125 frames); again high is exclusive
+    delay_frames = np.random.randint(low=75, high=126)
+    show_stim(window=window, stimuli=None, n_frames=delay_frames)
+    df.loc[trial, 'delay2'] = delay_frames
 
     # rate sense of agency (TODO: set maxWait?)
     stim['rating scale'].reset()
@@ -157,8 +167,10 @@ def show_trial(df, stim, trial, effect_colors=None, resp_clock=None):
     df.loc[trial, 'soa_rating'] = stim['rating scale'].getRating()
     df.loc[trial, 'rating_RT'] = stim['rating scale'].getRT()
 
-    # post-trial random interval
-    # TODO
+    # post-trial random interval, 25 - 75 frames
+    delay_frames = np.random.randint(low=25, high=76)
+    show_stim(window=window, stimuli=None, n_frames=delay_frames)
+    df.loc[trial, 'ITI'] = delay_frames
 
 
 def eval_resp(df, trial, keys, effect_colors=None):

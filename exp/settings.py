@@ -18,8 +18,7 @@ def create_settings():
 
 	# CHANGE:
 	settings['buttons'] = ['l', 'd']
-	settings['block trials'] = 72 # czy to jest w ogóle używane?
-	settings['proportions'] = [(9, 3), (3, 9)]
+	settings['proportions'] = [(80, 80)]
 
 	# fixTime is given in frames, in seconds that would be (1., 1.5)
 	settings['fix time range'] =  (100, 150)
@@ -78,7 +77,7 @@ def create_block(blockNum, settings=None):
 	template.iloc[:n_rows, pos_column_index] = -250 # bottom
 
 	# proportion of trials of Cued vs Free type
-	prop = random.choice(settings['proportions'])
+	prop = settings['proportions']
 	df = pd.concat([template.query('choiceType == "Cued"')] * prop[0] +
 				   [template.query('choiceType == "Free"')] * prop[1])
 	df = shuffle_rows(df)
