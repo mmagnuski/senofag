@@ -137,4 +137,62 @@ def eval_resp(df, trial, keys, effect_colors=None):
         else:
             used_hand = 'l' if keys == 'f' else 'r'
             condition = 'c' if used_hand == df.loc[trial, 'prime'][6] else 'i'
-            df.loc[trial, 'effect'] = effect_colors[used_hand + condition]
+        df.loc[trial, 'effect'] = effect_colors[used_hand + condition]
+
+
+class Instructions:
+	def __init__(self, win, instrfiles):
+		self.win = win
+		self.nextpage   = 0
+		self.navigation = {'left': 'prev', 'right': 'next',
+			'space': 'next'}
+
+		# get instructions from file:
+		self.imagefiles = instrfiles
+		self.images = []
+		self.generate_images()
+		self.stop_at_page = len(self.images)
+
+	def generate_images(self):
+		self.images = []
+		for imfl in self.imagefiles:
+			if not isinstance(imfl, types.FunctionType):
+				self.images.append(visual.ImageStim(self.win,
+					image=imfl, size=[1169, 826], units='pix',
+					interpolate=True))
+			else:
+				self.images.append(imfl)
+
+	def present(self, start=None, stop=None):
+		if not isinstance(start, int):
+			start = self.nextpage
+		if not isinstance(stop, int):
+			stop = len(self.images)
+
+		# show pages:
+		self.nextpage = start
+		while self.nextpage < stop:
+			# create page elements
+			action = self.show_page()
+
+			# go next/prev according to the response
+			if action == 'next':
+				self.nextpage += 1
+			else:
+				self.nextpage = max(0, self.nextpage - 1)
+
+	def show_page(self, page_num=None):
+		if not isinstance(page_num, int):
+			page_num = self.nextpage
+
+		img = self.images[page_num]
+		if not isinstance(img, types.FunctionType):
+			img.draw()
+			self.win.flip()
+
+			# wait for response
+			k = event.waitKeys(keyList=self.navigation.keys())[0]
+			return self.navigation[k]
+		else:
+			img()
+			return 'next'

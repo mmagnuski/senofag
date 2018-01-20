@@ -1,10 +1,19 @@
 import os
 from settings import create_settings, create_block, get_colors_from_square
-from stim import create_stimuli, show_trial
+from stim import create_stimuli, show_trial, Instructions
 
 settings = create_settings()
 stim = create_stimuli(fullscr=True)
 # colors = st.shuffle_colors(stim)
+
+# show instructions
+show_instructions = True
+instr_dir = os.path.join(os.getcwd(), 'instr')
+instructions = [os.path.join(instr_dir, f) for f in os.listdir(instr_dir)]
+if len(instructions) > 0:
+	instr = Instructions(window, instr)
+	instr.present()
+
 
 block_number = 0
 blck = create_block(block_number, settings=settings)
