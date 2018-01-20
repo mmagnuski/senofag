@@ -191,7 +191,7 @@ def eval_resp(df, trial, keys, effect_colors=None):
         else:
             used_hand = 'l' if keys == 'f' else 'r'
             condition = 'c' if used_hand == df.loc[trial, 'prime'][6] else 'i'
-        df.loc[trial, 'effect'] = effect_colors[used_hand + condition]
+            df.loc[trial, 'effect'] = effect_colors[used_hand + condition]
 
 
 def show_break(window):

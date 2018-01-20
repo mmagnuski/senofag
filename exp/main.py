@@ -15,7 +15,7 @@ show_instructions = True
 instr_dir = os.path.join(os.getcwd(), 'instr')
 instructions = [os.path.join(instr_dir, f) for f in os.listdir(instr_dir)]
 if len(instructions) > 0:
-	instr = Instructions(window, instr)
+	instr = Instructions(window, instructions)
 	instr.present()
 
 
