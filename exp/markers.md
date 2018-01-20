@@ -12,3 +12,7 @@
 15 - left_incomp  
 16 - right_neut  
 17 - left_neut  
+
+## warto dodać:
+* marker na response?
+* marker na fiksację

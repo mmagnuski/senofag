@@ -6,6 +6,10 @@ settings = create_settings()
 stim = create_stimuli(fullscr=True)
 # colors = st.shuffle_colors(stim)
 
+# make sure data dir exists
+if not os.path.isdir(settings['data dir']):
+    os.mkdir(settings['data dir'])
+
 # show instructions
 show_instructions = True
 instr_dir = os.path.join(os.getcwd(), 'instr')

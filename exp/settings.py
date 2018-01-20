@@ -18,8 +18,7 @@ def create_settings():
 
 	# CHANGE:
 	settings['buttons'] = ['l', 'd']
-	settings['block trials'] = 72 # czy to jest w ogóle używane?
-	settings['proportions'] = [(9, 3), (3, 9)]
+	settings['proportions'] = [(80, 80)]
 
 	# fixTime is given in frames, in seconds that would be (1., 1.5)
 	settings['fix time range'] =  (100, 150)
@@ -27,7 +26,7 @@ def create_settings():
 	return settings
 
 
-# experimental basic defs:
+# shuffle_colors is not used in experiment, remove if not needed
 def shuffle_colors(stim):
 	Kolory = list()
 	for color in ['red', 'green', 'yellow', 'blue']:
@@ -49,7 +48,7 @@ def shuffle_rows(df):
 	ind = list(range(len(df)))
 	random.shuffle(ind)
 	df = df.loc[ind, :]
-	
+
 	# make sure index starts at 1
 	df = df.reset_index(drop=True)
 	df.index = df.index + 1
@@ -57,13 +56,22 @@ def shuffle_rows(df):
 
 
 def create_block(blockNum, settings=None):
-	'''Creates block of trials.'''
+	'''Creates block of trials.
+
+	Uses following items from settings dict:
+	settings['proportions']    - proportions for the (cued, free) trials
+	settings['fix time range'] - range of times (tmin, tmax - in frames)
+								 defining the distribution limits for fixation
+								 point duration
+	'''
 
 	# define column names and dtypes
 	columns=['block', 'cond', 'choiceType', 'fixTime', 'prime', 'target',
-			 'effect', 'pos', 'corrResp', 'resp', 'ifcorr', 'RT', 'soa_rating', 'rating_RT']
+			 'effect', 'pos', 'corrResp', 'resp', 'ifcorr', 'RT', 'soa_rating',
+			 'rating_RT']
 	dtp = ['int32', 'category', 'category', 'int32', 'category', 'category',
-		   'object', 'float64', 'object', 'object', 'bool', 'float64', 'int16', 'float64']
+		   'object', 'float64', 'object', 'object', 'bool', 'float64', 'int16',
+		   'float64']
 
 	# read template and select columns
 	template = pd.read_excel('block_list.xls')
@@ -78,12 +86,12 @@ def create_block(blockNum, settings=None):
 	template.iloc[:n_rows, pos_column_index] = -250 # bottom
 
 	# proportion of trials of Cued vs Free type
-	prop = random.choice(settings['proportions'])
+	prop = settings['proportions']
 	df = pd.concat([template.query('choiceType == "Cued"')] * prop[0] +
 				   [template.query('choiceType == "Free"')] * prop[1])
 	df = shuffle_rows(df)
 
-	# add rows that were not present in the template
+	# add columns that were not present in the template
 	temp_cols = [c for c in columns if c not in template.columns]
 	for c in temp_cols:
 		df[c] = 0
