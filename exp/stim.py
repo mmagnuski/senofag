@@ -163,6 +163,7 @@ def show_trial(df, stim, trial, effect_colors=None, resp_clock=None):
     # rate sense of agency (TODO: set maxWait?)
     stim['rating scale'].reset()
     while stim['rating scale'].noResponse:
+        check_quit()
         stim['rating scale'].draw()
         window.flip()
 
@@ -224,6 +225,11 @@ def run_block(block_df, stim, block_num=0, break_every=15, effect_colors=None):
 
         if (trial + 1) % break_every == 0:
             show_break(stim['win'])
+
+
+def check_quit():
+    if 'q' in event.getKeys():
+        core.quit()
 
 
 class Instructions:
