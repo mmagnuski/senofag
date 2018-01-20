@@ -2,6 +2,7 @@
 
 import os
 from os import path as op
+import types
 from PIL import Image
 
 import numpy as np
