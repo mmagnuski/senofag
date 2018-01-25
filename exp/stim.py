@@ -60,7 +60,7 @@ class Trigger(object):
 
 def create_stimuli(fullscr=False):
     # TODO create window (MUST BE CHANGED (E.G. TO A DEFAULT ONE))
-    window = visual.Window((1200, 1000), fullscr=fullscr, monitor='testMonitor',
+    window = visual.Window((1920, 1080), fullscr=fullscr, monitor='testMonitor',
                            units='deg', color='black')
 
     # a list of stimuli images:
@@ -244,7 +244,7 @@ class Instructions:
 		for imfl in self.imagefiles:
 			if not isinstance(imfl, types.FunctionType):
 				self.images.append(visual.ImageStim(self.win,
-					image=imfl, size=[1169, 826], units='pix',
+					image=imfl, size=[1920, 1080], units='pix',
 					interpolate=True))
 			else:
 				self.images.append(imfl)
