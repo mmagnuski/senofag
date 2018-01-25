@@ -18,7 +18,7 @@ def create_settings():
 
 	# CHANGE:
 	settings['buttons'] = ['l', 'd']
-	settings['proportions'] = [(80, 80)]
+	settings['proportions'] = [80, 80]
 
 	# fixTime is given in frames, in seconds that would be (1., 1.5)
 	settings['fix time range'] =  (100, 150)

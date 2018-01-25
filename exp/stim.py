@@ -163,6 +163,7 @@ def show_trial(df, stim, trial, effect_colors=None, resp_clock=None):
     # rate sense of agency (TODO: set maxWait?)
     stim['rating scale'].reset()
     while stim['rating scale'].noResponse:
+        check_quit()
         stim['rating scale'].draw()
         window.flip()
 
@@ -191,7 +192,7 @@ def eval_resp(df, trial, keys, effect_colors=None):
         else:
             used_hand = 'l' if keys == 'f' else 'r'
             condition = 'c' if used_hand == df.loc[trial, 'prime'][6] else 'i'
-        df.loc[trial, 'effect'] = effect_colors[used_hand + condition]
+            df.loc[trial, 'effect'] = effect_colors[used_hand + condition]
 
 
 def show_break(window):
@@ -224,6 +225,11 @@ def run_block(block_df, stim, block_num=0, break_every=15, effect_colors=None):
 
         if (trial + 1) % break_every == 0:
             show_break(stim['win'])
+
+
+def check_quit():
+    if 'q' in event.getKeys():
+        core.quit()
 
 
 class Instructions:
