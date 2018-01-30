@@ -1,10 +1,12 @@
 import os
 from settings import create_settings, create_block, get_colors_from_square
-from stim import subject_id_gui, create_stimuli, show_trial, Instructions
+from stim import (subject_id_gui, create_stimuli, show_trial, run_block,
+                  Instructions)
 
 
 subject_id = subject_id_gui()
 settings = create_settings()
+settings['subject name'] = subject_id
 stim = create_stimuli(fullscr=True)
 # colors = st.shuffle_colors(stim)
 
@@ -22,14 +24,11 @@ if len(instructions) > 0:
 	instr = Instructions(stim['win'], instructions)
 	instr.present(stop=11)
 
+# TODO - add training block(s)
 
-block_number = 0
-blck = create_block(block_number, settings=settings)
 colors = ['red', 'green', 'yellow', 'blue']
-cond_color = get_colors_from_square(colors, block_number, settings=settings)
-data_fname = '{}_block_{}.csv'.format(subject_id, block_number)
-print(cond_color)
-
-for trial in range(1, 9):
-	show_trial(blck, stim, trial, effect_colors=cond_color)
-	blck.to_csv(os.path.join(settings['data dir'], data_fname))
+for block_number in range(4):
+    block_df = create_block(block_number, settings=settings)
+    cond_color = get_colors_from_square(colors, block_number, settings=settings)
+    run_block(block_df, stim, block_num=block_number, effect_colors=cond_color)
+    # TODO - show between-block instructions
