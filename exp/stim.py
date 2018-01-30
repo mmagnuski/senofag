@@ -110,9 +110,13 @@ def show_stim(window, stimuli=None, n_frames=10, resp_clock=None, trigger=None):
 
 # show_trial could get Trigger from the outside as kwarg,
 # else create one if None...
-def show_trial(df, stim, trial, effect_colors=None, resp_clock=None):
+def show_trial(df, stim, trial, effect_colors=None, resp_clock=None,
+               trigger=None):
     if resp_clock is None:
         resp_clock = core.Clock()
+
+    if trigger is None:
+        trigger = Trigger()
 
     # get stimuli
     fix = stim['fix']
@@ -125,17 +129,22 @@ def show_trial(df, stim, trial, effect_colors=None, resp_clock=None):
     target.pos = (0., df.loc[trial, 'pos'])
 
     # show fixation
+    trigger.set_sequence([0, 2], [100, 0])
     fix_frames = df.loc[trial, 'fixTime']
-    show_stim(window=window, stimuli=fix, n_frames=fix_frames)
+    show_stim(window=window, stimuli=fix, n_frames=fix_frames, trigger=trigger)
 
-    # show prime (TODO: add Trigger to prime)
-    show_stim(window=window, stimuli=fix + [prime], n_frames=2)
-    show_stim(window=window, stimuli=fix, n_frames=4)
+    # show prime
+    trigger.set_sequence([0], [1])
+    show_stim(window=window, stimuli=fix + [prime], n_frames=2,
+              trigger=trigger)
+    trigger.set_sequence([0], [0])
+    show_stim(window=window, stimuli=fix, n_frames=4, trigger=trigger)
 
-    # clear keybord buffer, show target (TODO: add Trigger)
+    # clear keybord buffer, show target
     event.getKeys()
+    trigger.set_sequence([0, 2], [2, 0])
     show_stim(window=window, stimuli=fix + [target], n_frames=25,
-              resp_clock=resp_clock)
+              resp_clock=resp_clock, trigger=trigger)
 
     # get response
     keys = event.getKeys(keyList=['d', 'l'], timeStamped=resp_clock)
@@ -143,6 +152,8 @@ def show_trial(df, stim, trial, effect_colors=None, resp_clock=None):
     if keys is None or len(keys) == 0:
         keys = event.waitKeys(keyList=['d', 'l'], timeStamped=resp_clock,
                               maxWait=1.2)
+
+    # TODO - add response trigger
 
     # evaluate repsonse
     eval_resp(df, trial, keys, effect_colors=effect_colors)
@@ -154,8 +165,9 @@ def show_trial(df, stim, trial, effect_colors=None, resp_clock=None):
     show_stim(window=window, stimuli=None, n_frames=delay_frames)
     df.loc[trial, 'delay1'] = delay_frames
 
-    # show effect (TODO: add Trigger)
-    show_stim(window=window, stimuli=circle, n_frames=25)
+    # show effect
+    trigger.set_sequence([0, 2], [4, 0])
+    show_stim(window=window, stimuli=circle, n_frames=25, trigger=trigger)
 
     # delay 2 (jittered 75 - 125 frames); again high is exclusive
     delay_frames = np.random.randint(low=75, high=126)
@@ -163,11 +175,17 @@ def show_trial(df, stim, trial, effect_colors=None, resp_clock=None):
     df.loc[trial, 'delay2'] = delay_frames
 
     # rate sense of agency (TODO: set maxWait?)
+    frame = 0
+    trigger.set_sequence([0, 2], [16, 0])
     stim['rating scale'].reset()
     while stim['rating scale'].noResponse:
         check_quit()
         stim['rating scale'].draw()
         window.flip()
+        trigger.react_to_frame(frame)
+        frame += 1
+
+    # TODO - send response marker when rating scale finished
 
     # save responses to df
     df.loc[trial, 'soa_rating'] = stim['rating scale'].getRating()

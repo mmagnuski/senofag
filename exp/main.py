@@ -6,6 +6,8 @@ settings = create_settings()
 stim = create_stimuli(fullscr=True)
 # colors = st.shuffle_colors(stim)
 
+# TODO - create trigger object (lab room)
+
 # make sure data dir exists
 if not os.path.isdir(settings['data dir']):
     os.mkdir(settings['data dir'])
