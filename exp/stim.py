@@ -229,7 +229,7 @@ def run_block(block_df, stim, block_num=0, break_every=15, effect_colors=None):
 
 
 def check_quit():
-    if 'q' in event.getKeys():
+    if 'q' in event.getKeys(keyList=['q']):
         core.quit()
 
 
