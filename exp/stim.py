@@ -41,21 +41,24 @@ def resized_image(win=None, image=None, scale=1, **kwargs):
 
 
 class Trigger(object):
-    def __init__(self, port_address, mapping=None):
-        self.port_address = port_address
-        self.mapping = mapping # is that used at all?
+    def __init__(self, port_address=None):
         self.frames = list()
         self.trigger_values = list()
+
+        if port_address is not None:
+            self.port = parallel.ParallelPort(address=port_address)
+        else:
+            self.port = False
 
     def set_sequence(self, frames, trigger_values):
         self.frames = frames
         self.trigger_values = trigger_values
 
     def react_to_frame(self, frame_num):
-        if frame_num in self.frames:
+        if self.port and frame_num in self.frames:
             idx = self.frames.index(frame_num)
             value = self.trigger_values[idx]
-            # TODO send trigger
+            self.port.setData(value)
 
 
 def create_stimuli(fullscr=False):
