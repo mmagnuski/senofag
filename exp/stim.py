@@ -6,7 +6,7 @@ import types
 from PIL import Image
 
 import numpy as np
-from psychopy import core, visual, event, monitors, parallel
+from psychopy import core, visual, event, gui, monitors, parallel
 
 
 def circle(win, col='green', pos=(0,0), r=2.5):
@@ -204,16 +204,17 @@ def eval_resp(df, trial, keys, effect_colors=None):
         df.loc[trial, 'resp'] = keys
         df.loc[trial, 'RT'] = np.nan
     else:
-        df.loc[trial, 'resp'] = keys[0][0]
-        df.loc[trial, 'RT'] = keys[0][1]
-        df.loc[trial, 'ifcorr'] = keys[0][0] in df.loc[trial, 'corrResp']
+        key, key_time = keys[0]
+        df.loc[trial, 'resp'] = key
+        df.loc[trial, 'RT'] = key_time
+        df.loc[trial, 'ifcorr'] = key in df.loc[trial, 'corrResp']
         if not df.loc[trial, 'ifcorr']:
             df.loc[trial, 'effect'] = 'cross'
             if df.loc[trial, 'choiceType'] == 'Free':
                 df.loc[trial, 'cond'] = 'XXX'
             # TODO add same trial type to the end of df
         else:
-            used_hand = 'l' if keys == 'd' else 'r'
+            used_hand = 'l' if key == 'd' else 'r'
             condition = 'c' if used_hand == df.loc[trial, 'prime'][6] else 'i'
             df.loc[trial, 'effect'] = effect_colors[used_hand + condition]
             if df.loc[trial, 'choiceType'] == 'Free':
@@ -319,9 +320,8 @@ def subject_id_gui():
     myDlg = gui.Dlg(title="Senofag")
     myDlg.addText('Subject info')
     myDlg.addField('ID:')
-    ok_data = myDlg.show()
-    if myDlg.OK:  # or if ok_data is not None
-        print(ok_data)
+    myDlg.show()
+    if myDlg.OK:
+        return myDlg.data[0]
     else:
         core.quit()
-    return myDlg.data[0]
