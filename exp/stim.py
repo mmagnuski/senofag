@@ -209,10 +209,15 @@ def eval_resp(df, trial, keys, effect_colors=None):
         df.loc[trial, 'ifcorr'] = keys[0][0] in df.loc[trial, 'corrResp']
         if not df.loc[trial, 'ifcorr']:
             df.loc[trial, 'effect'] = 'cross'
+            if df.loc[trial, 'choiceType'] == 'Free':
+                df.loc[trial, 'cond'] = 'XXX'
+            # TODO add same trial type to the end of df
         else:
             used_hand = 'l' if keys == 'd' else 'r'
             condition = 'c' if used_hand == df.loc[trial, 'prime'][6] else 'i'
             df.loc[trial, 'effect'] = effect_colors[used_hand + condition]
+            if df.loc[trial, 'choiceType'] == 'Free':
+                df.loc[trial, 'cond'] = 'comp' if condition == 'c' else 'incomp'
 
 
 def show_break(window):
