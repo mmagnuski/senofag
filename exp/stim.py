@@ -60,7 +60,8 @@ class Trigger(object):
 
 def create_stimuli(fullscr=False):
     # TODO create window (MUST BE CHANGED (E.G. TO A DEFAULT ONE))
-    window = visual.Window((1920, 1080), fullscr=fullscr, monitor='testMonitor',
+    # CHANGED visual.Window parameters!!! (1920, 1080) in the lab room
+    window = visual.Window((1366, 768), fullscr=fullscr, monitor='testMonitor',
                            units='deg', color='black')
 
     # a list of stimuli images:
@@ -75,7 +76,7 @@ def create_stimuli(fullscr=False):
     stim['circle']['cross'] = stim['cross.png']
 
     # create rating scale
-    navig = dict(leftKeys='f', rightKeys = 'j', acceptKeys='space',
+    navig = dict(leftKeys='d', rightKeys = 'l', acceptKeys='space',
                  low=1, high=7, markerStart=4, markerColor='seagreen',
                  showValue=False, showAccept=False, pos=(0., 0.),
                  scale='', labels=['niskie', 'wysokie'])
@@ -136,10 +137,10 @@ def show_trial(df, stim, trial, effect_colors=None, resp_clock=None):
               resp_clock=resp_clock)
 
     # get response
-    keys = event.getKeys(keyList=['f', 'j'], timeStamped=resp_clock)
+    keys = event.getKeys(keyList=['d', 'l'], timeStamped=resp_clock)
     # 1500 ms for response if not already given
     if keys is None or len(keys) == 0:
-        keys = event.waitKeys(keyList=['f', 'j'], timeStamped=resp_clock,
+        keys = event.waitKeys(keyList=['d', 'l'], timeStamped=resp_clock,
                               maxWait=1.2)
 
     # evaluate repsonse
@@ -190,7 +191,7 @@ def eval_resp(df, trial, keys, effect_colors=None):
         if not df.loc[trial, 'ifcorr']:
             df.loc[trial, 'effect'] = 'cross'
         else:
-            used_hand = 'l' if keys == 'f' else 'r'
+            used_hand = 'l' if keys == 'd' else 'r'
             condition = 'c' if used_hand == df.loc[trial, 'prime'][6] else 'i'
             df.loc[trial, 'effect'] = effect_colors[used_hand + condition]
 
@@ -236,7 +237,7 @@ class Instructions:
 	def __init__(self, win, instrfiles):
 		self.win = win
 		self.nextpage   = 0
-		self.navigation = {'left': 'prev', 'right': 'next',
+		self.navigation = {'d': 'prev', 'l': 'next',
 			'space': 'next'}
 
 		# get instructions from file:
@@ -250,7 +251,8 @@ class Instructions:
 		for imfl in self.imagefiles:
 			if not isinstance(imfl, types.FunctionType):
 				self.images.append(visual.ImageStim(self.win,
-					image=imfl, size=[1920, 1080], units='pix',
+                # must be CHANGED visual.Window parameters!!! (1920, 1080) in the lab room
+					image=imfl, size=[1366, 768], units='pix',
 					interpolate=True))
 			else:
 				self.images.append(imfl)

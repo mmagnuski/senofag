@@ -16,7 +16,7 @@ instr_dir = os.path.join(os.getcwd(), 'instr')
 instructions = [os.path.join(instr_dir, f) for f in os.listdir(instr_dir)]
 if len(instructions) > 0:
 	instr = Instructions(stim['win'], instructions)
-	instr.present()
+	instr.present(stop=11)
 
 
 block_number = 0
