@@ -41,27 +41,28 @@ def resized_image(win=None, image=None, scale=1, **kwargs):
 
 
 class Trigger(object):
-    def __init__(self, port_address, mapping=None):
-        self.port_address = port_address
-        self.mapping = mapping # is that used at all?
+    def __init__(self, port_address=None):
         self.frames = list()
         self.trigger_values = list()
+
+        if port_address is not None:
+            self.port = parallel.ParallelPort(address=port_address)
+        else:
+            self.port = False
 
     def set_sequence(self, frames, trigger_values):
         self.frames = frames
         self.trigger_values = trigger_values
 
     def react_to_frame(self, frame_num):
-        if frame_num in self.frames:
+        if self.port and frame_num in self.frames:
             idx = self.frames.index(frame_num)
             value = self.trigger_values[idx]
-            # TODO send trigger
+            self.port.setData(value)
 
 
 def create_stimuli(fullscr=False):
-    # TODO create window (MUST BE CHANGED (E.G. TO A DEFAULT ONE))
-    # CHANGED visual.Window parameters!!! (1920, 1080) in the lab room
-    window = visual.Window((1366, 768), fullscr=fullscr, monitor='testMonitor',
+    window = visual.Window(fullscr=fullscr, monitor='testMonitor',
                            units='deg', color='black')
 
     # a list of stimuli images:
@@ -109,9 +110,13 @@ def show_stim(window, stimuli=None, n_frames=10, resp_clock=None, trigger=None):
 
 # show_trial could get Trigger from the outside as kwarg,
 # else create one if None...
-def show_trial(df, stim, trial, effect_colors=None, resp_clock=None):
+def show_trial(df, stim, trial, effect_colors=None, resp_clock=None,
+               trigger=None):
     if resp_clock is None:
         resp_clock = core.Clock()
+
+    if trigger is None:
+        trigger = Trigger()
 
     # get stimuli
     fix = stim['fix']
@@ -124,17 +129,22 @@ def show_trial(df, stim, trial, effect_colors=None, resp_clock=None):
     target.pos = (0., df.loc[trial, 'pos'])
 
     # show fixation
+    trigger.set_sequence([0, 2], [100, 0])
     fix_frames = df.loc[trial, 'fixTime']
-    show_stim(window=window, stimuli=fix, n_frames=fix_frames)
+    show_stim(window=window, stimuli=fix, n_frames=fix_frames, trigger=trigger)
 
-    # show prime (TODO: add Trigger to prime)
-    show_stim(window=window, stimuli=fix + [prime], n_frames=2)
-    show_stim(window=window, stimuli=fix, n_frames=4)
+    # show prime
+    trigger.set_sequence([0], [1])
+    show_stim(window=window, stimuli=fix + [prime], n_frames=2,
+              trigger=trigger)
+    trigger.set_sequence([0], [0])
+    show_stim(window=window, stimuli=fix, n_frames=4, trigger=trigger)
 
-    # clear keybord buffer, show target (TODO: add Trigger)
+    # clear keybord buffer, show target
     event.getKeys()
+    trigger.set_sequence([0, 2], [2, 0])
     show_stim(window=window, stimuli=fix + [target], n_frames=25,
-              resp_clock=resp_clock)
+              resp_clock=resp_clock, trigger=trigger)
 
     # get response
     keys = event.getKeys(keyList=['d', 'l'], timeStamped=resp_clock)
@@ -142,6 +152,8 @@ def show_trial(df, stim, trial, effect_colors=None, resp_clock=None):
     if keys is None or len(keys) == 0:
         keys = event.waitKeys(keyList=['d', 'l'], timeStamped=resp_clock,
                               maxWait=1.2)
+
+    # TODO - add response trigger
 
     # evaluate repsonse
     eval_resp(df, trial, keys, effect_colors=effect_colors)
@@ -153,8 +165,9 @@ def show_trial(df, stim, trial, effect_colors=None, resp_clock=None):
     show_stim(window=window, stimuli=None, n_frames=delay_frames)
     df.loc[trial, 'delay1'] = delay_frames
 
-    # show effect (TODO: add Trigger)
-    show_stim(window=window, stimuli=circle, n_frames=25)
+    # show effect
+    trigger.set_sequence([0, 2], [4, 0])
+    show_stim(window=window, stimuli=circle, n_frames=25, trigger=trigger)
 
     # delay 2 (jittered 75 - 125 frames); again high is exclusive
     delay_frames = np.random.randint(low=75, high=126)
@@ -162,11 +175,17 @@ def show_trial(df, stim, trial, effect_colors=None, resp_clock=None):
     df.loc[trial, 'delay2'] = delay_frames
 
     # rate sense of agency (TODO: set maxWait?)
+    frame = 0
+    trigger.set_sequence([0, 2], [16, 0])
     stim['rating scale'].reset()
     while stim['rating scale'].noResponse:
         check_quit()
         stim['rating scale'].draw()
         window.flip()
+        trigger.react_to_frame(frame)
+        frame += 1
+
+    # TODO - send response marker when rating scale finished
 
     # save responses to df
     df.loc[trial, 'soa_rating'] = stim['rating scale'].getRating()
@@ -190,10 +209,15 @@ def eval_resp(df, trial, keys, effect_colors=None):
         df.loc[trial, 'ifcorr'] = keys[0][0] in df.loc[trial, 'corrResp']
         if not df.loc[trial, 'ifcorr']:
             df.loc[trial, 'effect'] = 'cross'
+            if df.loc[trial, 'choiceType'] == 'Free':
+                df.loc[trial, 'cond'] = 'XXX'
+            # TODO add same trial type to the end of df
         else:
             used_hand = 'l' if keys == 'd' else 'r'
             condition = 'c' if used_hand == df.loc[trial, 'prime'][6] else 'i'
             df.loc[trial, 'effect'] = effect_colors[used_hand + condition]
+            if df.loc[trial, 'choiceType'] == 'Free':
+                df.loc[trial, 'cond'] = 'comp' if condition == 'c' else 'incomp'
 
 
 def show_break(window):
@@ -229,7 +253,7 @@ def run_block(block_df, stim, block_num=0, break_every=15, effect_colors=None):
 
 
 def check_quit():
-    if 'q' in event.getKeys():
+    if 'q' in event.getKeys(keyList=['q']):
         core.quit()
 
 
@@ -251,7 +275,6 @@ class Instructions:
 		for imfl in self.imagefiles:
 			if not isinstance(imfl, types.FunctionType):
 				self.images.append(visual.ImageStim(self.win,
-                # must be CHANGED visual.Window parameters!!! (1920, 1080) in the lab room
 					image=imfl, size=[1366, 768], units='pix',
 					interpolate=True))
 			else:

@@ -19,6 +19,8 @@ def create_settings():
 	# CHANGE:
 	settings['buttons'] = ['l', 'd']
 	settings['proportions'] = [80, 80]
+	settings['send triggers'] = False # CHANGE to True in lab room
+	settings['port adress'] = int('0xDC00', base=16)
 
 	# fixTime is given in frames, in seconds that would be (1., 1.5)
 	settings['fix time range'] =  (100, 150)
