@@ -313,3 +313,15 @@ class Instructions:
 		else:
 			img()
 			return 'next'
+
+
+def subject_id_gui():
+    myDlg = gui.Dlg(title="Senofag")
+    myDlg.addText('Subject info')
+    myDlg.addField('ID:')
+    ok_data = myDlg.show()
+    if myDlg.OK:  # or if ok_data is not None
+        print(ok_data)
+    else:
+        core.quit()
+    return myDlg.data[0]
