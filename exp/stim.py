@@ -157,7 +157,11 @@ def show_trial(df, stim, trial, effect_colors=None, resp_clock=None,
         keys = event.waitKeys(keyList=['d', 'l'], timeStamped=resp_clock,
                               maxWait=1.2)
 
-    # TODO - add response trigger
+    # response trigger
+    trigger.set_sequence([0], [8])
+    trigger.react_to_frame(0)
+    trigger.set_sequence([1], [0])
+    show_stim(window=window, stimuli=None, n_frames=2)
 
     # evaluate repsonse
     eval_resp(df, trial, keys, effect_colors=effect_colors)
@@ -165,7 +169,7 @@ def show_trial(df, stim, trial, effect_colors=None, resp_clock=None,
 
     # delay 1 (jittered 40 - 60 frames)
     # high is 61 because randint upper limit is exclusive
-    delay_frames = np.random.randint(low=40, high=61)
+    delay_frames = np.random.randint(low=40, high=61) - 2
     show_stim(window=window, stimuli=None, n_frames=delay_frames)
     df.loc[trial, 'delay1'] = delay_frames
 
@@ -189,14 +193,18 @@ def show_trial(df, stim, trial, effect_colors=None, resp_clock=None,
         trigger.react_to_frame(frame)
         frame += 1
 
-    # TODO - send response marker when rating scale finished
+    # send response marker when rating scale finished
+    trigger.set_sequence([0], [8])
+    trigger.react_to_frame(0)
+    trigger.set_sequence([1], [0])
+    show_stim(window=window, stimuli=None, n_frames=2)
 
     # save responses to df
     df.loc[trial, 'soa_rating'] = stim['rating scale'].getRating()
     df.loc[trial, 'rating_RT'] = stim['rating scale'].getRT()
 
     # post-trial random interval, 25 - 75 frames
-    delay_frames = np.random.randint(low=25, high=76)
+    delay_frames = np.random.randint(low=25, high=76) - 2
     show_stim(window=window, stimuli=None, n_frames=delay_frames)
     df.loc[trial, 'ITI'] = delay_frames
 
