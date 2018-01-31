@@ -46,7 +46,7 @@ class Trigger(object):
         self.frames = list()
         self.trigger_values = list()
 
-        if port_address is not None:
+        if port_address is not None and port_address:
             self.port = parallel.ParallelPort(address=port_address)
         else:
             self.port = False
@@ -62,7 +62,7 @@ class Trigger(object):
             self.port.setData(value)
 
 
-def create_stimuli(fullscr=False):
+def create_stimuli(fullscr=False, settings=None):
     window = visual.Window(fullscr=fullscr, monitor='testMonitor',
                            units='deg', color='black')
 
@@ -84,6 +84,9 @@ def create_stimuli(fullscr=False):
                  scale='', labels=['niskie', 'wysokie'], noMouse = True)
 
     stim['rating scale'] = visual.RatingScale(window, **navig)
+
+    if settings is not None:
+        stim['trigger'] = Trigger(settings['port address'])
 
     return stim
 

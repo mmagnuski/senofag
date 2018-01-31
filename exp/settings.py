@@ -5,7 +5,7 @@ import numpy as np
 import pandas as pd
 
 
-def create_settings():
+def create_settings(short_test=False, send_triggers=True):
 	Kwadrat = np.array([[0, 3, 2, 1],
 						[1, 0, 3, 2],
 						[2, 1, 0, 3],
@@ -18,9 +18,8 @@ def create_settings():
 
 	# CHANGE:
 	settings['buttons'] = ['l', 'd']
-	settings['proportions'] = [80, 80]
-	settings['send triggers'] = False # CHANGE to True in lab room
-	settings['port adress'] = int('0xDC00', base=16)
+	settings['proportions'] = [1, 1] if short_test else [80, 80]
+	settings['port address'] = int('0xDC00', base=16) if send_triggers else None
 
 	# fixTime is given in frames, in seconds that would be (1., 1.5)
 	settings['fix time range'] =  (100, 150)
