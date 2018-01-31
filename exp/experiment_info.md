@@ -30,3 +30,14 @@ one frame == 10 ms
 | Agency rating  | max 1500  |
 | CLEAR SCREEN  | 250-750  |
 | SUM (avg)  | 5335|
+
+## Markers:
+
+code | meaning
+---|---
+ `1` | prime  
+ `2` | target  
+ `4` | effect  
+ `8` | response  
+ `16` | rating scale onset  
+ `100` | fixation  
