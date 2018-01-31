@@ -3,6 +3,7 @@
 import os
 from os import path as op
 import types
+import time
 from PIL import Image
 
 import numpy as np
@@ -266,8 +267,10 @@ def run_block(block_df, stim, block_num=0, break_every=15, effect_colors=None,
                    trigger=trigger)
 
         # write data after every trial
-        # (TODO: include save time in between-trial interval)
+        t0 = time.clock()
         block_df.to_csv(fname)
+        t1 = time.clock()
+        block_df.loc[trial, 'saveTime'] = t1 - t0
 
         if (trial + 1) % break_every == 0:
             show_break(stim['win'])
