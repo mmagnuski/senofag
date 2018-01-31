@@ -18,7 +18,7 @@ def create_settings(short_test=False, send_triggers=True):
 
 	# CHANGE:
 	settings['buttons'] = ['l', 'd']
-	settings['proportions'] = [1, 1] if short_test else [80, 80]
+	settings['proportions'] = [1, 1] if short_test else [10, 10]
 	settings['port address'] = int('0xDC00', base=16) if send_triggers else None
 
 	# fixTime is given in frames, in seconds that would be (1., 1.5)
@@ -60,7 +60,9 @@ def create_block(blockNum, settings=None):
 	'''Creates block of trials.
 
 	Uses following items from settings dict:
-	settings['proportions']    - proportions for the (cued, free) trials
+	settings['proportions']    - proportions for the (cued, free) trials in one
+								 experimental block. These values are multiplied
+								 by the 8 cued, 8 free base trials.
 	settings['fix time range'] - range of times (tmin, tmax - in frames)
 								 defining the distribution limits for fixation
 								 point duration
@@ -76,7 +78,7 @@ def create_block(blockNum, settings=None):
 	temp_cols = [c for c in columns if c in template.columns]
 	template = template.loc[:, temp_cols]
 
-	# add position - top / bottom
+	# duplicate template to add top / bottom position
 	n_rows = template.shape[0]
 	template = pd.concat([template, template])
 	template.loc[:, 'pos'] = 250  # top
