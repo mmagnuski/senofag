@@ -7,6 +7,7 @@ from PIL import Image
 
 import numpy as np
 from psychopy import core, visual, event, gui, monitors, parallel
+from settings import ensure_dtypes
 
 
 def circle(win, col='green', pos=(0,0), r=2.5):
@@ -200,6 +201,7 @@ def show_trial(df, stim, trial, effect_colors=None, resp_clock=None,
 def eval_resp(df, trial, keys, effect_colors=None):
     if keys is None or len(keys) == 0:
         keys = 'NoResp'
+        df.loc[trial, 'ifcorr'] = False
         df.loc[trial, 'effect'] = 'cross'
         df.loc[trial, 'resp'] = keys
         df.loc[trial, 'RT'] = np.nan
@@ -212,13 +214,18 @@ def eval_resp(df, trial, keys, effect_colors=None):
             df.loc[trial, 'effect'] = 'cross'
             if df.loc[trial, 'choiceType'] == 'Free':
                 df.loc[trial, 'cond'] = 'XXX'
-            # TODO add same trial type to the end of df
         else:
             used_hand = 'l' if key == 'd' else 'r'
             condition = 'c' if used_hand == df.loc[trial, 'prime'][6] else 'i'
             df.loc[trial, 'effect'] = effect_colors[used_hand + condition]
             if df.loc[trial, 'choiceType'] == 'Free':
                 df.loc[trial, 'cond'] = 'comp' if condition == 'c' else 'incomp'
+    # if incorrect response add this trial type to the end of the df
+    if not df.loc[trial, 'ifcorr']:
+        last_index = df.index[-1]
+        df.loc[last_index + 1, :] = df.loc[trial, :]
+        # ARGH, fuck, pandas, why?!
+        df = ensure_dtypes(df)
 
 
 def show_break(window):
@@ -238,12 +245,12 @@ def show_break(window):
 
 
 def run_block(block_df, stim, block_num=0, break_every=15, effect_colors=None,
-              trigger=None):
-    n_trials = block_df.shape[0]
+              trigger=None, settings=None):
+    trial = 1
     suffix = '_block_{}.csv'.format(block_num)
     fname = os.path.join(settings['data dir'],
                          settings['subject name'] + suffix)
-    for trial in range(n_trials):
+    while trial <= block_df.index[-1]:
         show_trial(block_df, stim, trial, effect_colors=effect_colors,
                    trigger=trigger)
 
@@ -253,6 +260,7 @@ def run_block(block_df, stim, block_num=0, break_every=15, effect_colors=None,
 
         if (trial + 1) % break_every == 0:
             show_break(stim['win'])
+        trial += 1
 
 
 def check_quit():

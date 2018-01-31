@@ -71,9 +71,6 @@ def create_block(blockNum, settings=None):
 	columns=['block', 'cond', 'choiceType', 'fixTime', 'prime', 'target',
 			 'effect', 'pos', 'corrResp', 'resp', 'ifcorr', 'RT', 'soa_rating',
 			 'rating_RT']
-	dtp = ['int32', 'category', 'category', 'int32', 'category', 'category',
-		   'object', 'float64', 'object', 'object', 'bool', 'float64', 'int16',
-		   'float64']
 
 	# read template and select columns
 	template = pd.read_excel('block_list.xls')
@@ -106,7 +103,18 @@ def create_block(blockNum, settings=None):
 	df.loc[:, 'fixTime'] = np.random.randint(low=tmin, high=tmax, size=n_rows)
 
 	# make sure dtypes are correct
+	df = ensure_dtypes(df)
+
+	return df
+
+
+def ensure_dtypes(df):
+	columns=['block', 'cond', 'choiceType', 'fixTime', 'prime', 'target',
+		 'effect', 'pos', 'corrResp', 'resp', 'ifcorr', 'RT', 'soa_rating',
+		 'rating_RT']
+	dtp = ['int32', 'category', 'category', 'int32', 'category', 'category',
+		   'object', 'float64', 'object', 'object', 'bool', 'float64', 'int16',
+		   'float64']
 	for col, tp in zip(columns, dtp):
 		df[col] = df[col].astype(tp)
-
 	return df
