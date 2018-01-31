@@ -76,7 +76,7 @@ def create_block(blockNum, settings=None):
 			   'soa_rating', 'rating_RT']
 
 	# read template and select columns
-	template = pd.read_excel('block_list.xls')
+	template = pd.read_excel('template.xls')
 	temp_cols = [c for c in columns if c in template.columns]
 	template = template.loc[:, temp_cols]
 
