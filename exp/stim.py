@@ -116,7 +116,7 @@ def show_stim(window, stimuli=None, n_frames=10, resp_clock=None, trigger=None):
 # show_trial could get Trigger from the outside as kwarg,
 # else create one if None...
 def show_trial(df, stim, trial, effect_colors=None, resp_clock=None,
-               trigger=None):
+               trigger=None, show_effect=True):
     if resp_clock is None:
         resp_clock = core.Clock()
 
@@ -169,7 +169,10 @@ def show_trial(df, stim, trial, effect_colors=None, resp_clock=None,
 
     # evaluate repsonse
     eval_resp(df, trial, keys, effect_colors=effect_colors)
-    circle = stim['circle'][df.loc[trial, 'effect']]
+    if show_effect:
+        circle = stim['circle'][df.loc[trial, 'effect']]
+    else:
+        circle = stim['circle']['grey']
 
     # delay 1 (jittered 40 - 60 frames)
     # high is 61 because randint upper limit is exclusive
@@ -268,6 +271,27 @@ def run_block(block_df, stim, block_num=0, break_every=15, effect_colors=None,
     while trial <= block_df.index[-1]:
         show_trial(block_df, stim, trial, effect_colors=effect_colors,
                    trigger=trigger)
+
+        # write data after every trial
+        t0 = time.clock()
+        block_df.to_csv(fname)
+        t1 = time.clock()
+        block_df.loc[trial, 'saveTime'] = t1 - t0
+
+        if (trial + 1) % break_every == 0:
+            show_break(stim['win'])
+        trial += 1
+
+
+def run_test_block(block_df, stim, block_num=-1, break_every=1, effect_colors=None,
+              trigger=None, settings=None):
+    trial = 1
+    suffix = '_block_test_{}.csv'.format(block_num)
+    fname = os.path.join(settings['data dir'],
+                         settings['subject name'] + suffix)
+    while trial < 3:
+        show_trial(block_df, stim, trial, effect_colors=effect_colors,
+                   trigger=trigger, show_effect=False)
 
         # write data after every trial
         t0 = time.clock()
