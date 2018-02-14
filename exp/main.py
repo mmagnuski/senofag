@@ -34,9 +34,8 @@ if show_test == True:
                    trigger=trigger, settings=settings)
 
 # INSTRUCTIONS between the training and main blocks
-    # 'start' should be smaller by 1 than the desired slide number
-    # here it starts from the slide 11 and ends with the 12
-instr = Instructions(stim['win'], instructions)
+# 'start' should be smaller by 1 than the desired slide number
+# here it starts from the slide 11 and ends with the 12
 instr.present(start=10, stop=12)
 
 #MAIN BLOCKS
@@ -46,12 +45,10 @@ for block_number in range(4):
     run_block(block_df, stim, block_num=block_number, effect_colors=cond_color,
               trigger=trigger, settings=settings)
     # show between-block instructions
-    instr = Instructions(stim['win'], instructions)
     instr.present(start=12, stop=14)
 
 # END INSTRUCTIONS:
 # TODO add keyList 't' or 'n' to the available answers here and
 # save them somewhere in the data (?) or add the last question to the
 # next procedure (detection task)
-instr = Instructions(stim['win'], instructions)
 instr.present(start=14, stop=16)
