@@ -1,6 +1,6 @@
 import os
 from settings import create_settings, create_block, get_colors_from_square
-from stim import subject_id_gui, create_stimuli, run_block, run_test_block, Instructions
+from stim import subject_id_gui, create_stimuli, run_block, Instructions
 
 
 subject_id = subject_id_gui()
@@ -25,13 +25,14 @@ if len(instructions) > 0:
 
 # TRAINING:
 show_test = True
+block_args = dict(trigger=trigger, settings=settings)
 
-if show_test == True:
+if show_test:
     block_num = 0
     test_df = create_block(blockNum=block_num, settings=settings)
     cond_color = get_colors_from_square(colors, block_num, settings=settings)
-    run_test_block(test_df, stim, block_num, effect_colors=cond_color,
-                   trigger=trigger, settings=settings)
+    run_block(test_df, stim, block_num, effect_colors=cond_color,
+              show_effect=False, suffix='training', **block_args)
 
 # INSTRUCTIONS between the training and main blocks
 # 'start' should be smaller by 1 than the desired slide number
@@ -39,11 +40,12 @@ if show_test == True:
 instr.present(start=10, stop=12)
 
 #MAIN BLOCKS
-for block_number in range(4):
-    block_df = create_block(block_number, settings=settings)
-    cond_color = get_colors_from_square(colors, block_number, settings=settings)
-    run_block(block_df, stim, block_num=block_number, effect_colors=cond_color,
-              trigger=trigger, settings=settings)
+for block_num in range(4):
+    block_df = create_block(block_num, settings=settings)
+    cond_color = get_colors_from_square(colors, block_num, settings=settings)
+    run_block(block_df, stim, block_num=block_num, effect_colors=cond_color,
+              **block_args)
+
     # show between-block instructions
     instr.present(start=12, stop=14)
 

@@ -259,18 +259,25 @@ def show_break(window):
     if keys is None or len(keys) == 0:
         keys = event.waitKeys(keyList=['space'])
 
-    # TODO random wait after break
+    # TODO random wait after break?
 
 
-def run_block(block_df, stim, block_num=0, break_every=15, effect_colors=None,
-              trigger=None, settings=None):
-    trial = 1
-    suffix = '_block_{}.csv'.format(block_num)
+def run_block(block_df, stim, block_num=0, break_every=15, n_trials=None,
+              effect_colors=None, trigger=None, show_effect=True,
+              settings=None, suffix='_block_{}.csv'):
+    # set dataframe file name
+    suffix = suffix.format(block_num) if '{}' in suffix else suffix
     fname = os.path.join(settings['data dir'],
                          settings['subject name'] + suffix)
-    while trial <= block_df.index[-1]:
+
+    # set trials to use
+    max_trials = block_df.shape[0]
+    n_trials = max_trials if n_trials is None else n_trials
+    all_trials = block_df.index[:min(n_trials, max_trials)]
+
+    for trial in all_trials:
         show_trial(block_df, stim, trial, effect_colors=effect_colors,
-                   trigger=trigger)
+                   trigger=trigger, show_effect=show_effect)
 
         # write data after every trial
         t0 = time.clock()
@@ -278,30 +285,8 @@ def run_block(block_df, stim, block_num=0, break_every=15, effect_colors=None,
         t1 = time.clock()
         block_df.loc[trial, 'saveTime'] = t1 - t0
 
-        if (trial + 1) % break_every == 0:
+        if (trial) % break_every == 0:
             show_break(stim['win'])
-        trial += 1
-
-
-def run_test_block(block_df, stim, block_num=-1, break_every=1, effect_colors=None,
-              trigger=None, settings=None):
-    trial = 1
-    suffix = '_block_test_{}.csv'.format(block_num)
-    fname = os.path.join(settings['data dir'],
-                         settings['subject name'] + suffix)
-    while trial < 3:
-        show_trial(block_df, stim, trial, effect_colors=effect_colors,
-                   trigger=trigger, show_effect=False)
-
-        # write data after every trial
-        t0 = time.clock()
-        block_df.to_csv(fname)
-        t1 = time.clock()
-        block_df.loc[trial, 'saveTime'] = t1 - t0
-
-        if (trial + 1) % break_every == 0:
-            show_break(stim['win'])
-        trial += 1
 
 
 def check_quit():
