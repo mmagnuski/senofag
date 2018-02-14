@@ -169,7 +169,7 @@ def show_trial(df, stim, trial, effect_colors=None, resp_clock=None,
 
     # evaluate repsonse
     eval_resp(df, trial, keys, effect_colors=effect_colors)
-    if show_effect:
+    if show_effect or not df.loc[trial, 'ifcorr']:
         circle = stim['circle'][df.loc[trial, 'effect']]
     else:
         circle = stim['circle']['grey']

@@ -10,7 +10,8 @@ from stim import subject_id_gui, create_stimuli, run_block, Instructions
 show_instructions = True
 show_training = True
 
-colors = shuffle(['red', 'green', 'yellow', 'blue'])
+# colors = shuffle(['red', 'green', 'yellow', 'blue']) - shuffle causes an error
+colors = ['red', 'green', 'yellow', 'blue']
 
 settings = create_settings(short_test=False, send_triggers=False)
 subject_id = subject_id_gui()
@@ -37,6 +38,7 @@ if show_training:
     test_df = create_block(blockNum=block_num, settings=settings)
     cond_color = get_colors_from_square(colors, block_num, settings=settings)
     run_block(test_df, stim, block_num, effect_colors=cond_color,
+              n_trials=2,
               show_effect=False, suffix='training', **block_args)
 
 # INSTRUCTIONS between the training and main blocks
