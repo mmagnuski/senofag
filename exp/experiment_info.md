@@ -1,4 +1,5 @@
 ## EXPERIMENT STRUCTURE
+### MAIN PROCEDURE
 category | value
 ---|---
 | COLORS  | 4  |
@@ -6,6 +7,17 @@ category | value
 | TRIALS (overall)  | 640 |
 | BREAKS  | 10%  |
 | TIME (in minutes) | 62.597  |
+
+### PRIME DETECTION TASK
+No effect circle nor SoA assessment.
+
+category | value
+---|---
+| COLORS  | 0 (no circles) |
+| TRIALS (per block)  | 72 |
+| TRIALS (overall)  | 288 |
+| BREAKS  | 10%  |
+| TIME (in minutes) | 14.045  |
 
 ## BLOCK STRUCTURE
 `response_hand` (2: left, right) * `condition` (2: comp, incomp) *  
