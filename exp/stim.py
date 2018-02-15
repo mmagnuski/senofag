@@ -82,7 +82,7 @@ def create_stimuli(fullscr=False, settings=None):
     navig = dict(leftKeys='d', rightKeys = 'l', acceptKeys='space',
                  low=1, high=7, markerStart=4, markerColor='seagreen',
                  showValue=False, showAccept=False, pos=(0., 0.),
-                 scale='', labels=['niskie', 'wysokie'], noMouse = True)
+                 scale='Poczucie kontroli:', labels=['niskie', 'wysokie'], noMouse = True)
 
     stim['rating scale'] = visual.RatingScale(window, **navig)
 
@@ -249,7 +249,7 @@ def eval_resp(df, trial, keys, effect_colors=None):
 def show_break(window):
     # TODO add info about how many trials passed, which block it is ...?
     event.getKeys()
-    text = visual.TextStim(window, text=u'Aby przejść dalej\nnaciśnij spację')
+    text = visual.TextStim(window, text=u'To jest ekran przerwy\n\nAby przejść dalej\nnaciśnij spację')
     text.draw()
     window.flip()
 
@@ -353,7 +353,7 @@ class Instructions:
 
 
 def subject_id_gui():
-    myDlg = gui.Dlg(title="Senofag")
+    myDlg = gui.Dlg(title="Poczucie kontroli - badanie")
     myDlg.addText('Subject info')
     myDlg.addField('ID:')
     myDlg.show()
