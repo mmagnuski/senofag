@@ -38,9 +38,8 @@ if show_training:
     test_df = create_block(blockNum=block_num, settings=settings)
     cond_color = get_colors_from_square(colors, block_num, settings=settings)
     run_block(test_df, stim, block_num, effect_colors=cond_color,
-              break_every=2,
-              n_trials=2,
-              show_effect=False, suffix='_training_GR1.csv', **block_args)
+              break_every=2, n_trials=2, show_effect=False,
+              suffix='_training_GR1.csv', **block_args)
 
 # INSTRUCTIONS between the training and main blocks
 # 'start' should be smaller by 1 than the desired slide number
@@ -52,8 +51,7 @@ for block_num in range(4):
     block_df = create_block(block_num, settings=settings)
     cond_color = get_colors_from_square(colors, block_num, settings=settings)
     run_block(block_df, stim, block_num=block_num, effect_colors=cond_color,
-    suffix='_block_{}_GR1.csv',
-              **block_args)
+              suffix='_block_{}_GR1.csv', **block_args)
 
     # show between-block instructions
     instr.present(start=12, stop=14)
