@@ -265,9 +265,9 @@ def show_break(window):
 
 def run_block(block_df, stim, block_num=0, break_every=15, n_trials=None,
               effect_colors=None, trigger=None, show_effect=True,
-              settings=None, suffix='_block_{}.csv'):
+              settings=None, suffix='_block_{}_GR{}.csv'):
     # set dataframe file name
-    suffix = suffix.format(block_num) if '{}' in suffix else suffix
+    # suffix = suffix.format(block_num, subject_group) if '{}' in suffix else suffix
     fname = os.path.join(settings['data dir'],
                          settings['subject name'] + suffix)
 
@@ -357,8 +357,9 @@ def subject_id_gui():
     myDlg = gui.Dlg(title="Poczucie kontroli - badanie")
     myDlg.addText('Subject info')
     myDlg.addField('ID:')
+    myDlg.addField('Group:')
     myDlg.show()
     if myDlg.OK:
-        return myDlg.data[0]
+        return myDlg.data
     else:
         core.quit()

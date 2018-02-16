@@ -119,3 +119,6 @@ def ensure_dtypes(df):
 	for col, tp in zip(columns, dtp):
 		df[col] = df[col].astype(tp)
 	return df
+
+def raise_error():
+    raise ValueError('You did something wrong!')
