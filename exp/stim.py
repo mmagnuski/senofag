@@ -116,7 +116,7 @@ def show_stim(window, stimuli=None, n_frames=10, resp_clock=None, trigger=None):
 # show_trial could get Trigger from the outside as kwarg,
 # else create one if None...
 def show_trial(df, stim, trial, effect_colors=None, resp_clock=None,
-               trigger=None, show_effect=True):
+               trigger=None, show_effect=True, show_scale=True):
     if resp_clock is None:
         resp_clock = core.Clock()
 
@@ -184,31 +184,32 @@ def show_trial(df, stim, trial, effect_colors=None, resp_clock=None,
     trigger.set_sequence([0, 2], [4, 0])
     show_stim(window=window, stimuli=circle, n_frames=25, trigger=trigger)
 
-    # delay 2 (jittered 75 - 125 frames); again high is exclusive
-    delay_frames = np.random.randint(low=75, high=126)
-    show_stim(window=window, stimuli=None, n_frames=delay_frames)
-    df.loc[trial, 'delay2'] = delay_frames
+    if show_scale:
+        # delay 2 (jittered 75 - 125 frames); again high is exclusive
+        delay_frames = np.random.randint(low=75, high=126)
+        show_stim(window=window, stimuli=None, n_frames=delay_frames)
+        df.loc[trial, 'delay2'] = delay_frames
 
-    # rate sense of agency (TODO: set maxWait?)
-    frame = 0
-    trigger.set_sequence([0, 2], [16, 0])
-    stim['rating scale'].reset()
-    while stim['rating scale'].noResponse:
-        check_quit()
-        stim['rating scale'].draw()
-        window.flip()
-        trigger.react_to_frame(frame)
-        frame += 1
+        # rate sense of agency (TODO: set maxWait?)
+        frame = 0
+        trigger.set_sequence([0, 2], [16, 0])
+        stim['rating scale'].reset()
+        while stim['rating scale'].noResponse:
+            check_quit()
+            stim['rating scale'].draw()
+            window.flip()
+            trigger.react_to_frame(frame)
+            frame += 1
 
-    # send response marker when rating scale finished
-    trigger.set_sequence([0], [8])
-    trigger.react_to_frame(0)
-    trigger.set_sequence([1], [0])
-    show_stim(window=window, stimuli=None, n_frames=2)
+        # send response marker when rating scale finished
+        trigger.set_sequence([0], [8])
+        trigger.react_to_frame(0)
+        trigger.set_sequence([1], [0])
+        show_stim(window=window, stimuli=None, n_frames=2)
 
-    # save responses to df
-    df.loc[trial, 'soa_rating'] = stim['rating scale'].getRating()
-    df.loc[trial, 'rating_RT'] = stim['rating scale'].getRT()
+        # save responses to df
+        df.loc[trial, 'soa_rating'] = stim['rating scale'].getRating()
+        df.loc[trial, 'rating_RT'] = stim['rating scale'].getRT()
 
     # post-trial random interval, 25 - 75 frames
     delay_frames = np.random.randint(low=25, high=76) - 2
