@@ -68,3 +68,9 @@ Typ. contrast | `1000:1`
 Typ. DCR (DyNomic Contrast Ratio) | `12M:1`
 Panel type | `TN`
 Response time | `1 ms` (GtG)
+
+define monitor this way:
+```python
+participant_distance = 80
+lab_monitor = Monitor('BenQ', width=53.136, distance=participant_distance)
+```
