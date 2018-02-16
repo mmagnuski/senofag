@@ -53,3 +53,18 @@ code | meaning
  `8` | response  
  `16` | rating scale onset  
  `100` | fixation  
+
+## Lab monitor
+
+ key | value  
+---|---
+LCD size (inch) | `24`
+Aspect ratio | `16:9`
+max resolution | `1920 x 1080` at 144Hz (DVI-DL)
+Display area (mm) | `531.36 x 298.89`
+Pixel pitch (mm) | `0.276`
+Typ. brightness (cd/㎡) | `350`
+Typ. contrast | `1000:1`
+Typ. DCR (DyNomic Contrast Ratio) | `12M:1`
+Panel type | `TN`
+Response time | `1 ms` (GtG)
