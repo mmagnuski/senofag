@@ -462,3 +462,62 @@ def subject_id_gui():
         return myDlg.data
     else:
         core.quit()
+
+
+class ArrowStim(object):
+    def __init__(self, window, razor_width=1., razor_height=0.8,
+                 razor_sharpness=0.15, arrow_width=2., arrow_height=1.6,
+                 arrow_sharpness=0.5, arrow_color='white', razor_color='black',
+                 pos=(0, 0)):
+
+        pos_array = np.array(pos)[np.newaxis, :]
+        jigjag = np.array([1, -1, 1, -1, 1])
+        razor_x_pos_right = razor_width + jigjag * razor_sharpness
+        razor_x_pos_left = razor_x_pos_right * -1
+        y_pos = np.linspace(razor_height, -razor_height, num=5)
+
+        full_x = np.concatenate([razor_x_pos_right, razor_x_pos_left[::-1]])
+        full_y = np.concatenate([y_pos, y_pos[::-1]])
+        razor_vertices = np.stack([full_x, full_y], axis=1)
+
+        razor_shape = visual.ShapeStim(window, vertices=razor_vertices)
+        razor_shape.setFillColor(razor_color)
+        razor_shape.setLineColor(razor_color)
+
+        arrow_xpos = arrow_width * np.array([1., 1., 1., -1., -1.])
+        arrow_xpos[1] += arrow_sharpness
+        arrow_ypos = np.concatenate(
+            [np.linspace(arrow_height, -arrow_height, num=3),
+             np.linspace(-arrow_height, arrow_height, num=2)])
+        arrow_vertices = np.stack([arrow_xpos, arrow_ypos], axis=1)
+        arrow_vertices += pos_array
+        arrow_shape = visual.ShapeStim(window, vertices=arrow_vertices)
+        arrow_shape.setFillColor(arrow_color)
+        arrow_shape.setLineColor(arrow_color)
+
+        self.window = window
+        self.arrow_color = arrow_color
+        self.razor_color = razor_color
+        self.arrow_vertices = arrow_vertices
+        self.razor_vertices = razor_vertices
+        self.arrow = arrow_shape
+        self.razor = razor_shape
+
+    def draw(self):
+        self.arrow.draw()
+        self.razor.draw()
+
+    def setPos(self, pos):
+        # even this doesn't work... (shape still gets messed up)
+        pos_array = np.asarray(pos)[np.newaxis, :]
+        arrow_shape = visual.ShapeStim(
+            self.window, vertices=np.array(self.arrow_vertices) + pos_array)
+        arrow_shape.setFillColor(self.arrow_color)
+        arrow_shape.setLineColor(self.arrow_color)
+        self.arrow = arrow_shape
+
+        razor_shape = visual.ShapeStim(
+            self.window, vertices=np.array(self.razor_vertices) + pos_array)
+        razor_shape.setFillColor(self.razor_color)
+        razor_shape.setLineColor(self.razor_color)
+        self.razor = razor_shape
