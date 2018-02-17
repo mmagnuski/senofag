@@ -8,13 +8,18 @@ from stim import subject_id_gui, create_stimuli, run_block, Instructions
 
 
 # quick settings
-show_instructions = True
-show_training = True
+show_instructions = False
+show_training = False
+show_main_proc = False
+show_prime_detection_task = True
 
-# colors = shuffle(['red', 'green', 'yellow', 'blue']) - shuffle causes an error
 colors = ['red', 'green', 'yellow', 'blue']
+shuffle(colors)
 
 settings = create_settings(short_test=False, send_triggers=False)
+settings_prime = create_settings(short_test=False, prime_task=True,
+                          send_triggers=False)
+
 subject_data = subject_id_gui()
 subject_id = subject_data[0]
 subject_group = subject_data[1]
@@ -41,9 +46,9 @@ if show_instructions:
     else:
         instr.present(stop=11)
 
-# TRAINING:
 block_args = dict(trigger=trigger, settings=settings)
 
+# TRAINING:
 if show_training:
     block_num = 0
     test_df = create_block(blockNum=block_num, settings=settings)
@@ -62,12 +67,13 @@ if show_instructions:
         instr.present(start=11, stop=13)
 
 #MAIN BLOCKS
-for block_num in range(4):
-    block_df = create_block(block_num, settings=settings)
-    cond_color = get_colors_from_square(colors, block_num, settings=settings)
-    run_block(block_df, stim, block_num=block_num, effect_colors=cond_color,
-              suffix='_block_{}_GR{}.csv'.format(block_num, subject_group),
-              **block_args)
+if show_main_proc:
+    for block_num in range(4):
+        block_df = create_block(block_num, settings=settings)
+        cond_color = get_colors_from_square(colors, block_num, settings=settings)
+        run_block(block_df, stim, block_num=block_num, effect_colors=cond_color,
+        show_effect=True, suffix='_block_{}_GR{}.csv'.format(block_num, subject_group),
+                  **block_args)
 
     # show between-block instructions
     if subject_group == '1':
@@ -83,3 +89,12 @@ if subject_group == '1':
     instr.present(start=14, stop=15)
 else:
     instr.present(start=15, stop=16)
+
+# prime detection task presentation:
+if show_prime_detection_task:
+    for block_num in range(4):
+        block_df = create_block(block_num, settings=settings_prime)
+        run_block(block_df, stim, block_num=block_num, prime_det=True,
+                  break_every=2,
+                  suffix='_block_primeDET_{}_GR{}.csv'.format(block_num, subject_group),
+                  **block_args)

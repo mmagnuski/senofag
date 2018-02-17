@@ -116,7 +116,7 @@ def show_stim(window, stimuli=None, n_frames=10, resp_clock=None, trigger=None):
 # show_trial could get Trigger from the outside as kwarg,
 # else create one if None...
 def show_trial(df, stim, trial, effect_colors=None, resp_clock=None,
-               trigger=None, show_effect=True, show_scale=True):
+               trigger=None, show_effect=True):
     if resp_clock is None:
         resp_clock = core.Clock()
 
@@ -184,22 +184,21 @@ def show_trial(df, stim, trial, effect_colors=None, resp_clock=None,
     trigger.set_sequence([0, 2], [4, 0])
     show_stim(window=window, stimuli=circle, n_frames=25, trigger=trigger)
 
-    if show_scale:
-        # delay 2 (jittered 75 - 125 frames); again high is exclusive
-        delay_frames = np.random.randint(low=75, high=126)
-        show_stim(window=window, stimuli=None, n_frames=delay_frames)
-        df.loc[trial, 'delay2'] = delay_frames
+    # delay 2 (jittered 75 - 125 frames); again high is exclusive
+    delay_frames = np.random.randint(low=75, high=126)
+    show_stim(window=window, stimuli=None, n_frames=delay_frames)
+    df.loc[trial, 'delay2'] = delay_frames
 
-        # rate sense of agency (TODO: set maxWait?)
-        frame = 0
-        trigger.set_sequence([0, 2], [16, 0])
-        stim['rating scale'].reset()
-        while stim['rating scale'].noResponse:
-            check_quit()
-            stim['rating scale'].draw()
-            window.flip()
-            trigger.react_to_frame(frame)
-            frame += 1
+    # rate sense of agency (TODO: set maxWait?)
+    frame = 0
+    trigger.set_sequence([0, 2], [16, 0])
+    stim['rating scale'].reset()
+    while stim['rating scale'].noResponse:
+        check_quit()
+        stim['rating scale'].draw()
+        window.flip()
+        trigger.react_to_frame(frame)
+        frame += 1
 
         # send response marker when rating scale finished
         trigger.set_sequence([0], [8])
@@ -216,6 +215,102 @@ def show_trial(df, stim, trial, effect_colors=None, resp_clock=None,
     show_stim(window=window, stimuli=None, n_frames=delay_frames)
     df.loc[trial, 'ITI'] = delay_frames
 
+def prime_detection_task(df, stim, trial,  resp_clock=None, trigger=None):
+    if resp_clock is None:
+        resp_clock = core.Clock()
+
+    if trigger is None:
+        trigger = Trigger()
+
+    # get stimuli
+    fix = stim['fix']
+    window = stim['win']
+    prime = stim[df.loc[trial, 'prime']]
+    target = stim[df.loc[trial, 'target']]
+
+    # set position
+    prime.pos = (0., df.loc[trial, 'pos'])
+    target.pos = (0., df.loc[trial, 'pos'])
+
+    # show fixation
+    trigger.set_sequence([0, 2], [100, 0])
+    fix_frames = df.loc[trial, 'fixTime']
+    show_stim(window=window, stimuli=fix, n_frames=fix_frames, trigger=trigger)
+
+    # show prime
+    trigger.set_sequence([0], [1])
+    show_stim(window=window, stimuli=fix + [prime], n_frames=2,
+              trigger=trigger)
+    trigger.set_sequence([0], [0])
+    show_stim(window=window, stimuli=fix, n_frames=4, trigger=trigger)
+
+    # show target
+    trigger.set_sequence([0, 2], [2, 0])
+    show_stim(window=window, stimuli=fix + [target], n_frames=25,
+              trigger=trigger)
+
+    # delay 1 (60 frames)
+    show_stim(window=window, stimuli=fix, n_frames=60)
+
+    # clear keybord buffer & change fixation to signalise response window
+    event.getKeys()
+    trigger.set_sequence([0, 2], [101, 0])
+    for x in fix:
+        x.setFillColor((1, -1, -1))
+    show_stim(window=window, stimuli=fix, n_frames=3, trigger=trigger,
+              resp_clock=resp_clock)
+
+    # get response
+    keys = event.getKeys(keyList=['d', 'l'], timeStamped=resp_clock)
+    # 1500 ms for response if not already given
+    if keys is None or len(keys) == 0:
+        keys = event.waitKeys(keyList=['d', 'l'], timeStamped=resp_clock,
+                              maxWait=1.2)
+
+    correct_frames = 0
+    if keys is not None:
+        # response trigger
+        correct_frames = 2
+        trigger.set_sequence([0], [8])
+        trigger.react_to_frame(0)
+        trigger.set_sequence([1], [0])
+        for x in fix:
+            x.setFillColor((1, 1, 1))
+        show_stim(window=window, stimuli=fix, n_frames=2)
+
+    for x in fix:
+        x.setFillColor((1, 1, 1))
+
+    # evaluate repsonse for prime detection
+    eval_resp_prime(df, trial, keys)
+    if df.loc[trial, 'resp'] == 'NoResp':
+        show_stim(window=window, stimuli=stim['circle']['cross'], n_frames=25)
+
+    # post-trial random interval, 25 - 75 frames
+    delay_frames = np.random.randint(low=25, high=76) - 2
+    show_stim(window=window, stimuli=None, n_frames=delay_frames)
+    df.loc[trial, 'ITI'] = delay_frames
+
+
+def eval_resp_prime(df, trial, keys):
+    if keys is None or len(keys) == 0:
+        keys = 'NoResp'
+        df.loc[trial, 'ifcorr'] = False
+        df.loc[trial, 'effect'] = 'cross'
+        df.loc[trial, 'resp'] = keys
+        df.loc[trial, 'RT'] = np.nan
+    else:
+        key, key_time = keys[0]
+        df.loc[trial, 'resp'] = key
+        df.loc[trial, 'RT'] = key_time
+        used_hand = 'l' if key == 'd' else 'r'
+        condition = 'c' if used_hand == df.loc[trial, 'prime'][6] else 'i'
+        if df.loc[trial, 'choiceType'] == 'Free':
+            df.loc[trial, 'cond'] = 'comp' if condition == 'c' else 'incomp'
+        if condition == 'c':
+            df.loc[trial, 'ifcorr'] = True
+        else:
+            df.loc[trial, 'ifcorr'] = False
 
 def eval_resp(df, trial, keys, effect_colors=None):
     if keys is None or len(keys) == 0:
@@ -254,18 +349,17 @@ def show_break(window):
     text.draw()
     window.flip()
 
-    # wait for space
-    keys = event.getKeys(keyList=['space'])
-    # 1500 ms for response if not already given
-    if keys is None or len(keys) == 0:
-        keys = event.waitKeys(keyList=['space'])
+    # wait for space or for quit
+    keys = event.waitKeys(keyList=['q', 'space'])
+    check_quit(keys)
+
 
     # TODO random wait after break?
 
 
 def run_block(block_df, stim, block_num=0, break_every=15, n_trials=None,
-              effect_colors=None, trigger=None, show_effect=True,
-              settings=None, suffix='_block_{}_GR{}.csv'):
+              effect_colors=None, trigger=None, show_effect=None,
+              prime_det=False, settings=None, suffix='_block_{}_GR{}.csv'):
     # set dataframe file name
     # suffix = suffix.format(block_num, subject_group) if '{}' in suffix else suffix
     fname = os.path.join(settings['data dir'],
@@ -277,10 +371,13 @@ def run_block(block_df, stim, block_num=0, break_every=15, n_trials=None,
     all_trials = block_df.index[:min(n_trials, max_trials)]
 
     for trial in all_trials:
-        show_trial(block_df, stim, trial, effect_colors=effect_colors,
-                   trigger=trigger, show_effect=show_effect)
+        if prime_det==False:
+            show_trial(block_df, stim, trial, effect_colors=effect_colors,
+                       trigger=trigger, show_effect=show_effect)
+        else:
+            prime_detection_task(block_df, stim, trial, trigger=trigger)
 
-        # write data after every trial
+        # write data after every trial TODO CHECK IF CORRECT
         t0 = time.clock()
         block_df.to_csv(fname)
         t1 = time.clock()
@@ -290,8 +387,10 @@ def run_block(block_df, stim, block_num=0, break_every=15, n_trials=None,
             show_break(stim['win'])
 
 
-def check_quit():
-    if 'q' in event.getKeys(keyList=['q']):
+def check_quit(keys=None):
+    if keys is None:
+        event.getKeys(keyList=['q'])
+    if 'q' in keys:
         core.quit()
 
 
