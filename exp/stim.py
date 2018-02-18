@@ -217,6 +217,7 @@ def show_trial(df, stim, trial, effect_colors=None, resp_clock=None,
     show_stim(window=window, stimuli=None, n_frames=delay_frames)
     df.loc[trial, 'ITI'] = delay_frames
 
+
 def prime_detection_task(df, stim, trial,  resp_clock=None, trigger=None):
     if resp_clock is None:
         resp_clock = core.Clock()
@@ -256,9 +257,8 @@ def prime_detection_task(df, stim, trial,  resp_clock=None, trigger=None):
 
     # clear keybord buffer & change fixation to signalise response window
     event.getKeys()
+    for arm in fix: arm.setFillColor((1, -1, -1))
     trigger.set_sequence([0, 2], [101, 0])
-    for x in fix:
-        x.setFillColor((1, -1, -1))
     show_stim(window=window, stimuli=fix, n_frames=3, trigger=trigger,
               resp_clock=resp_clock)
 
@@ -269,18 +269,15 @@ def prime_detection_task(df, stim, trial,  resp_clock=None, trigger=None):
         keys = event.waitKeys(keyList=['d', 'l'], timeStamped=resp_clock,
                               maxWait=1.2)
 
+    for arm in fix: arm.setFillColor((1, 1, 1))
+
     correct_frames = 0
     if keys is not None:
         # response trigger
         correct_frames = 2
         trigger.send(8)
         trigger.set_sequence([1], [0])
-        for x in fix:
-            x.setFillColor((1, 1, 1))
         show_stim(window=window, stimuli=fix, n_frames=2)
-
-    for x in fix:
-        x.setFillColor((1, 1, 1))
 
     # evaluate repsonse for prime detection
     eval_resp_prime(df, trial, keys)
@@ -288,7 +285,7 @@ def prime_detection_task(df, stim, trial,  resp_clock=None, trigger=None):
         show_stim(window=window, stimuli=stim['circle']['cross'], n_frames=25)
 
     # post-trial random interval, 25 - 75 frames
-    delay_frames = np.random.randint(low=25, high=76) - 2
+    delay_frames = np.random.randint(low=25, high=76) - correct_frames
     show_stim(window=window, stimuli=None, n_frames=delay_frames)
     df.loc[trial, 'ITI'] = delay_frames
 
@@ -312,6 +309,7 @@ def eval_resp_prime(df, trial, keys):
             df.loc[trial, 'ifcorr'] = True
         else:
             df.loc[trial, 'ifcorr'] = False
+
 
 def eval_resp(df, trial, keys, effect_colors=None):
     if keys is None or len(keys) == 0:
@@ -346,7 +344,8 @@ def eval_resp(df, trial, keys, effect_colors=None):
 def show_break(window):
     # TODO add info about how many trials passed, which block it is ...?
     event.getKeys()
-    text = visual.TextStim(window, text=u'To jest ekran przerwy\n\nAby przejść dalej\nnaciśnij spację')
+    break_text = u'To jest ekran przerwy\n\nAby przejść dalej\nnaciśnij spację'
+    text = visual.TextStim(window, text=break_text)
     text.draw()
     window.flip()
 
@@ -371,7 +370,7 @@ def run_block(block_df, stim, break_every=15, n_trials=None,
     all_trials = block_df.index[:min(n_trials, max_trials)]
 
     for trial in all_trials:
-        if prime_det==False:
+        if not prime_det:
             show_trial(block_df, stim, trial, effect_colors=effect_colors,
                        trigger=trigger, show_effect=show_effect)
         else:
