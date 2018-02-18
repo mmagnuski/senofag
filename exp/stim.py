@@ -200,15 +200,14 @@ def show_trial(df, stim, trial, effect_colors=None, resp_clock=None,
         trigger.react_to_frame(frame)
         frame += 1
 
-        # send response marker when rating scale finished
-        trigger.set_sequence([0], [8])
-        trigger.react_to_frame(0)
-        trigger.set_sequence([1], [0])
-        show_stim(window=window, stimuli=None, n_frames=2)
+    # send response marker when rating scale finished
+    trigger.send(8)
+    trigger.set_sequence([1], [0])
+    show_stim(window=window, stimuli=None, n_frames=2)
 
-        # save responses to df
-        df.loc[trial, 'soa_rating'] = stim['rating scale'].getRating()
-        df.loc[trial, 'rating_RT'] = stim['rating scale'].getRT()
+    # save responses to df
+    df.loc[trial, 'soa_rating'] = stim['rating scale'].getRating()
+    df.loc[trial, 'rating_RT'] = stim['rating scale'].getRT()
 
     # post-trial random interval, 25 - 75 frames
     delay_frames = np.random.randint(low=25, high=76) - 2
