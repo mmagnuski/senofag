@@ -198,7 +198,6 @@ def show_trial(df, stim, trial, effect_colors=None, resp_clock=None,
     trigger.set_sequence([0, 2], [16, 0])
     stim['rating scale'].reset()
     while stim['rating scale'].noResponse:
-        check_quit()
         stim['rating scale'].draw()
         window.flip()
         trigger.react_to_frame(frame)
@@ -361,7 +360,7 @@ def run_block(block_df, stim, break_every=15, n_trials=None,
               effect_colors=None, trigger=None, show_effect=None,
               prime_det=False, settings=None, suffix='_data.csv'):
     # set dataframe file name
-    fname = 'senofag_{}_{}'.format(
+    fname = 'SoA_{}_{}'.format(
         settings['subject group'], settings['subject name']) + suffix
     fname = os.path.join(settings['data dir'], fname)
 

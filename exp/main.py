@@ -8,8 +8,8 @@ from stim import subject_id_gui, create_stimuli, run_block, Instructions
 
 
 # quick settings
-show_instructions = False
-show_training = False
+show_instructions = True
+show_training = True
 show_main_proc = False
 show_prime_detection_task = True
 
