@@ -62,6 +62,10 @@ class Trigger(object):
             value = self.trigger_values[idx]
             self.port.setData(value)
 
+    def send(self, value):
+        if self.port:
+            self.port.setData(value)
+
 
 def create_stimuli(fullscr=False, settings=None):
     window = visual.Window(fullscr=fullscr, monitor='testMonitor',
@@ -162,8 +166,7 @@ def show_trial(df, stim, trial, effect_colors=None, resp_clock=None,
     if keys is not None:
         # response trigger
         correct_frames = 2
-        trigger.set_sequence([0], [8])
-        trigger.react_to_frame(0)
+        trigger.send(8)
         trigger.set_sequence([1], [0])
         show_stim(window=window, stimuli=None, n_frames=2)
 
@@ -270,8 +273,7 @@ def prime_detection_task(df, stim, trial,  resp_clock=None, trigger=None):
     if keys is not None:
         # response trigger
         correct_frames = 2
-        trigger.set_sequence([0], [8])
-        trigger.react_to_frame(0)
+        trigger.send(8)
         trigger.set_sequence([1], [0])
         for x in fix:
             x.setFillColor((1, 1, 1))
