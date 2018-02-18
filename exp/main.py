@@ -50,9 +50,9 @@ if show_training:
     block_num = 0
     test_df = create_block(blockNum=block_num, settings=settings)
     cond_color = get_colors_from_square(colors, block_num, settings=settings)
-    run_block(test_df, stim, block_num, effect_colors=cond_color,
-              break_every=2, n_trials=2, show_effect=False,
-              suffix='_training_GR{}.csv'.format(subject_group), **block_args)
+    run_block(test_df, stim, effect_colors=cond_color, break_every=2,
+              n_trials=2, show_effect=False, suffix='_training.csv',
+              **block_args)
 
 # INSTRUCTIONS between the training and main blocks
 # 'start' should be smaller by 1 than the desired slide number
@@ -63,14 +63,15 @@ if show_instructions:
     else:
         instr.present(start=11, stop=13)
 
-#MAIN BLOCKS
+# MAIN BLOCKS
 if show_main_proc:
     for block_num in range(4):
         block_df = create_block(block_num, settings=settings)
-        cond_color = get_colors_from_square(colors, block_num, settings=settings)
-        run_block(block_df, stim, block_num=block_num, effect_colors=cond_color,
-        show_effect=True, suffix='_block_{}_GR{}.csv'.format(block_num, subject_group),
-                  **block_args)
+        cond_color = get_colors_from_square(colors, block_num,
+                                            settings=settings)
+        run_block(block_df, stim, show_effect=True,
+                  suffix='_block_{}.csv'.format(block_num),
+                  effect_colors=cond_color, **block_args)
 
     # show between-block instructions
     if settings['subject group'] == '1':
@@ -82,16 +83,16 @@ if show_main_proc:
 # TODO add keyList 't' or 'n' to the available answers here and
 # save them somewhere in the data (?) or add the last question to the
 # next procedure (detection task)
-if subject_group == '1':
+if settings['subject group'] == '1':
     instr.present(start=14, stop=15)
 else:
     instr.present(start=15, stop=16)
 
 # prime detection task presentation:
+block_args['settings'] = settings_prime
 if show_prime_detection_task:
     for block_num in range(4):
         block_df = create_block(block_num, settings=settings_prime)
-        run_block(block_df, stim, block_num=block_num, prime_det=True,
-                  break_every=2,
-                  suffix='_block_primeDET_{}_GR{}.csv'.format(block_num, subject_group),
+        run_block(block_df, stim, prime_det=True, break_every=2,
+                  suffix='_prime_detection_block_{}.csv'.format(block_num),
                   **block_args)

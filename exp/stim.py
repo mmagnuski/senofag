@@ -353,17 +353,16 @@ def show_break(window):
     keys = event.waitKeys(keyList=['q', 'space'])
     check_quit(keys)
 
-
     # TODO random wait after break?
 
 
-def run_block(block_df, stim, block_num=0, break_every=15, n_trials=None,
+def run_block(block_df, stim, break_every=15, n_trials=None,
               effect_colors=None, trigger=None, show_effect=None,
-              prime_det=False, settings=None, suffix='_block_{}_GR{}.csv'):
+              prime_det=False, settings=None, suffix='_data.csv'):
     # set dataframe file name
-    # suffix = suffix.format(block_num, subject_group) if '{}' in suffix else suffix
-    fname = os.path.join(settings['data dir'],
-                         settings['subject name'] + suffix)
+    fname = 'senofag_{}_{}'.format(
+        settings['subject_group'], settings['subject name']) + suffix
+    fname = os.path.join(settings['data dir'], fname)
 
     # set trials to use
     max_trials = block_df.shape[0]
