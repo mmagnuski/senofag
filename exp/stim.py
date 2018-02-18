@@ -86,7 +86,8 @@ def create_stimuli(fullscr=False, settings=None):
     navig = dict(leftKeys='d', rightKeys = 'l', acceptKeys='space',
                  low=1, high=7, markerStart=4, markerColor='seagreen',
                  showValue=False, showAccept=False, pos=(0., 0.),
-                 scale='Poczucie kontroli:', labels=['niskie', 'wysokie'], noMouse = True)
+                 scale='Poczucie kontroli:', labels=['niskie', 'wysokie'],
+                 noMouse = True)
 
     stim['rating scale'] = visual.RatingScale(window, **navig)
 
@@ -361,7 +362,7 @@ def run_block(block_df, stim, break_every=15, n_trials=None,
               prime_det=False, settings=None, suffix='_data.csv'):
     # set dataframe file name
     fname = 'senofag_{}_{}'.format(
-        settings['subject_group'], settings['subject name']) + suffix
+        settings['subject group'], settings['subject name']) + suffix
     fname = os.path.join(settings['data dir'], fname)
 
     # set trials to use
