@@ -33,7 +33,7 @@ if not op.isdir(settings['data dir']):
 
 # show instructions
 def select_instructions(fname, group):
-    return not 'a' in fname if group == '1' else not 'b' in fname
+    return not 'b' in fname if group == '1' else not 'a' in fname
 
 if show_instructions:
     instr_dir = op.join(os.getcwd(), 'instr')
@@ -43,11 +43,11 @@ if show_instructions:
     instr_offset = int(settings['subject group']) - 1
     instr.present(stop=10 + instr_offset)
 
-block_args = dict(trigger=trigger, settings=settings)
 
 # TRAINING:
+block_num = 0
+block_args = dict(trigger=trigger, settings=settings)
 if show_training:
-    block_num = 0
     test_df = create_block(blockNum=block_num, settings=settings)
     cond_color = get_colors_from_square(colors, block_num, settings=settings)
     run_block(test_df, stim, effect_colors=cond_color, break_every=2,
@@ -64,7 +64,7 @@ if show_main_proc:
         cond_color = get_colors_from_square(colors, block_num,
                                             settings=settings)
         run_block(block_df, stim, show_effect=True,
-                  suffix='_block_{}.csv'.format(block_num),
+                  suffix='regular_block_{}.csv'.format(block_num),
                   effect_colors=cond_color, **block_args)
 
     # show between-block instructions
