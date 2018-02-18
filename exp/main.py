@@ -64,7 +64,7 @@ if show_main_proc:
         cond_color = get_colors_from_square(colors, block_num,
                                             settings=settings)
         run_block(block_df, stim, show_effect=True,
-                  suffix='regular_block_{}.csv'.format(block_num),
+                  suffix='_regular_block_{}.csv'.format(block_num),
                   effect_colors=cond_color, **block_args)
 
     # show between-block instructions
