@@ -55,7 +55,8 @@ if show_training:
               **block_args)
 
 # INSTRUCTIONS between the training and main blocks
-instr.present(stop=12 + instr_offset)
+if show_instructions:
+    instr.present(stop=12 + instr_offset)
 
 # MAIN BLOCKS
 if show_main_proc:
@@ -68,16 +69,18 @@ if show_main_proc:
                   effect_colors=cond_color, **block_args)
 
     # show between-block instructions
-    instr.present(stop=14 + instr_offset)
+    if show_instructions:
+        instr.present(stop=14 + instr_offset)
 
 # END INSTRUCTIONS:
 # TODO add keyList 't' or 'n' to the available answers here and
 # save them somewhere in the data (?) or add the last question to the
 # next procedure (detection task)
-instr.present(stop=15 + instr_offset)
+if show_instructions:
+    instr.present(stop=15 + instr_offset)
 
 # prime detection task presentation:
-block_args['settings'] = settings_prime
+# block_args['settings'] = settings_prime
 if show_prime_detection_task:
     for block_num in range(4):
         block_df = create_block(block_num, settings=settings_prime)

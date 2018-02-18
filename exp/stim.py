@@ -398,8 +398,7 @@ class Instructions:
 	def __init__(self, win, instrfiles):
 		self.win = win
 		self.nextpage   = 0
-		self.navigation = {'d': 'prev', 'l': 'next',
-			'space': 'next'}
+		self.navigation = {'d': 'prev', 'l': 'next'}
 
 		# get instructions from file:
 		self.imagefiles = instrfiles
