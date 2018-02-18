@@ -21,11 +21,8 @@ settings_prime = create_settings(short_test=False, prime_task=True,
                           send_triggers=False)
 
 subject_data = subject_id_gui()
-subject_id = subject_data[0]
-subject_group = subject_data[1]
-
-settings['subject name'] = subject_id
-settings['subject group'] = subject_group
+settings['subject name'] = subject_data[0]
+settings['subject group'] = subject_data[1]
 
 stim = create_stimuli(fullscr=True, settings=settings)
 trigger = stim['trigger']
@@ -35,13 +32,13 @@ if not op.isdir(settings['data dir']):
     os.mkdir(settings['data dir'])
 
 # show instructions
-group_instr_folder = 'instr{}'.format(subject_group)
+group_instr_folder = 'instr{}'.format(settings['subject group'])
 
 if show_instructions:
     instr_dir = op.join(os.getcwd(), group_instr_folder)
     instructions = [op.join(instr_dir, f) for f in os.listdir(instr_dir)]
     instr = Instructions(stim['win'], instructions)
-    if subject_group == '1':
+    if settings['subject group'] == '1':
         instr.present(stop=10)
     else:
         instr.present(stop=11)
@@ -61,7 +58,7 @@ if show_training:
 # 'start' should be smaller by 1 than the desired slide number
 # here it starts from the slide 11 and ends with the 12
 if show_instructions:
-    if subject_group == '1':
+    if settings['subject group'] == '1':
         instr.present(start=10, stop=12)
     else:
         instr.present(start=11, stop=13)
@@ -76,7 +73,7 @@ if show_main_proc:
                   **block_args)
 
     # show between-block instructions
-    if subject_group == '1':
+    if settings['subject group'] == '1':
         instr.present(start=12, stop=14)
     else:
         instr.present(start=13, stop=15)
