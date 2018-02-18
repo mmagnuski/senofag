@@ -32,16 +32,16 @@ if not op.isdir(settings['data dir']):
     os.mkdir(settings['data dir'])
 
 # show instructions
-group_instr_folder = 'instr{}'.format(settings['subject group'])
+def select_instructions(fname, group):
+    return not 'a' in fname if group == '1' else not 'b' in fname
 
 if show_instructions:
-    instr_dir = op.join(os.getcwd(), group_instr_folder)
-    instructions = [op.join(instr_dir, f) for f in os.listdir(instr_dir)]
+    instr_dir = op.join(os.getcwd(), 'instr')
+    instructions = [op.join(instr_dir, f) for f in os.listdir(instr_dir)
+                    if select_instructions(f, settings['subject group'])]
     instr = Instructions(stim['win'], instructions)
-    if settings['subject group'] == '1':
-        instr.present(stop=10)
-    else:
-        instr.present(stop=11)
+    instr_offset = int(settings['subject group']) - 1
+    instr.present(stop=10 + instr_offset)
 
 block_args = dict(trigger=trigger, settings=settings)
 
@@ -55,13 +55,7 @@ if show_training:
               **block_args)
 
 # INSTRUCTIONS between the training and main blocks
-# 'start' should be smaller by 1 than the desired slide number
-# here it starts from the slide 11 and ends with the 12
-if show_instructions:
-    if settings['subject group'] == '1':
-        instr.present(start=10, stop=12)
-    else:
-        instr.present(start=11, stop=13)
+instr.present(stop=12 + instr_offset)
 
 # MAIN BLOCKS
 if show_main_proc:
@@ -74,19 +68,13 @@ if show_main_proc:
                   effect_colors=cond_color, **block_args)
 
     # show between-block instructions
-    if settings['subject group'] == '1':
-        instr.present(start=12, stop=14)
-    else:
-        instr.present(start=13, stop=15)
+    instr.present(stop=14 + instr_offset)
 
 # END INSTRUCTIONS:
 # TODO add keyList 't' or 'n' to the available answers here and
 # save them somewhere in the data (?) or add the last question to the
 # next procedure (detection task)
-if settings['subject group'] == '1':
-    instr.present(start=14, stop=15)
-else:
-    instr.present(start=15, stop=16)
+instr.present(stop=15 + instr_offset)
 
 # prime detection task presentation:
 block_args['settings'] = settings_prime
