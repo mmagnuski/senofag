@@ -7,6 +7,8 @@ import time
 from PIL import Image
 
 import numpy as np
+
+    # FIXME 'monitors' not used later
 from psychopy import core, visual, event, gui, monitors, parallel
 from settings import ensure_dtypes
 
@@ -68,6 +70,7 @@ class Trigger(object):
 
 
 def create_stimuli(fullscr=False, settings=None):
+    # TODO change monitor???
     window = visual.Window(fullscr=fullscr, monitor='testMonitor',
                            units='deg', color='black')
 

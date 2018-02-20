@@ -1,17 +1,19 @@
 import os
 import os.path as op
+import pandas as pd
 from random import shuffle
 
 from settings import (create_settings, create_block, get_colors_from_square,
                      raise_error)
 from stim import subject_id_gui, create_stimuli, run_block, Instructions
+from psychopy import event, visual
 
 
 # quick settings
 show_instructions = True
-show_training = True
+show_training = False
 show_main_proc = False
-show_prime_detection_task = True
+show_prime_detection_task = False
 
 colors = ['red', 'green', 'yellow', 'blue']
 shuffle(colors)
@@ -50,9 +52,10 @@ block_args = dict(trigger=trigger, settings=settings)
 if show_training:
     test_df = create_block(blockNum=block_num, settings=settings)
     cond_color = get_colors_from_square(colors, block_num, settings=settings)
-    run_block(test_df, stim, effect_colors=cond_color, break_every=2,
-              n_trials=2, show_effect=False, suffix='_training.csv',
-              **block_args)
+    run_block(test_df, stim, effect_colors=cond_color, show_effect=False,
+              suffix='_training.csv',
+              # FIXME: change to break_every=5 and set n_trials=14
+              break_every=2, n_trials=2, **block_args)
 
 # INSTRUCTIONS between the training and main blocks
 if show_instructions:
@@ -66,24 +69,52 @@ if show_main_proc:
                                             settings=settings)
         run_block(block_df, stim, show_effect=True,
                   suffix='_regular_block_{}.csv'.format(block_num),
-                  effect_colors=cond_color, **block_args)
+                  effect_colors=cond_color,
+                  # FIXME: remove break_every and n_trials
+                  break_every=2, n_trials=2, **block_args)
 
-    # show between-block instructions
-    if show_instructions:
-        instr.present(stop=14 + instr_offset)
+        # show between-block instructions
+        if show_instructions:
+            instr.present(stop=14 + instr_offset)
 
 # END INSTRUCTIONS:
-# TODO add keyList 't' or 'n' to the available answers here and
-# save them somewhere in the data (?) or add the last question to the
-# next procedure (detection task)
 if show_instructions:
-    instr.present(stop=15 + instr_offset)
+    instr.present(stop=16 + instr_offset)
+
+# show the slide with prime detection initial question
+    # get response
+    # FIXME prime_question is not displayed but the system waits for keys
+    event.getKeys()
+    prime_question = visual.ImageStim(stim['win'], image=instructions[26])
+    prime_question.draw()
+    keys = event.getKeys(keyList=['t', 'n'])
+    if keys is None or len(keys) == 0:
+        keys = event.waitKeys(keyList=['t', 'n'])
+    if keys is not None:
+        settings['prime seen'] = keys
+# prime detection task instructions:
+        instr.present(start=15 + instr_offset, stop=21 + instr_offset)
+
 
 # prime detection task presentation:
 # block_args['settings'] = settings_prime
 if show_prime_detection_task:
     for block_num in range(4):
         block_df = create_block(block_num, settings=settings_prime)
-        run_block(block_df, stim, prime_det=True, break_every=2,
+        run_block(block_df, stim, prime_det=True,
                   suffix='_prime_detection_block_{}.csv'.format(block_num),
-                  **block_args)
+                  # FIXME: remove break_every and n_trials
+                  break_every=2, n_trials=2, **block_args)
+        # show between-block instructions
+        if show_instructions:
+            instr.present(stop=23 + instr_offset)
+
+# END PROCEDURE INSTRUCTIONS:
+if show_instructions:
+    instr.present(stop=25 + instr_offset)
+
+# saving settings to have the prime visibility question
+settings_df = pd.DataFrame.from_dict(settings, orient='index')
+settings_df_name = 'SoA_{}_{}'.format(
+    settings['subject group'], settings['subject name']) + '_settings.csv'
+settings_df.to_csv(os.path.join(settings['data dir'], settings_df_name))
