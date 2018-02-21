@@ -10,6 +10,7 @@ from psychopy import event, visual
 
 
 # quick settings
+debug_mode = True
 show_instructions = True
 show_training = False
 show_main_proc = False
@@ -48,20 +49,23 @@ if show_instructions:
 
 # TRAINING:
 block_num = 0
+n_trials = 2 if debug_mode else 14
+break_every = 2 if debug_mode else 5
 block_args = dict(trigger=trigger, settings=settings)
 if show_training:
     test_df = create_block(blockNum=block_num, settings=settings)
     cond_color = get_colors_from_square(colors, block_num, settings=settings)
     run_block(test_df, stim, effect_colors=cond_color, show_effect=False,
-              suffix='_training.csv',
-              # FIXME: change to break_every=5 and set n_trials=14
-              break_every=2, n_trials=2, **block_args)
+              suffix='_training.csv', break_every=break_every, n_trials=2,
+              **block_args)
 
 # INSTRUCTIONS between the training and main blocks
 if show_instructions:
     instr.present(stop=12 + instr_offset)
 
 # MAIN BLOCKS
+n_trials = 2 if debug_mode else None
+break_every = 2 if debug_mode else None
 if show_main_proc:
     for block_num in range(4):
         block_df = create_block(block_num, settings=settings)
@@ -69,9 +73,8 @@ if show_main_proc:
                                             settings=settings)
         run_block(block_df, stim, show_effect=True,
                   suffix='_regular_block_{}.csv'.format(block_num),
-                  effect_colors=cond_color,
-                  # FIXME: remove break_every and n_trials
-                  break_every=2, n_trials=2, **block_args)
+                  effect_colors=cond_color, break_every=break_every,
+                  n_trials=2, **block_args)
 
         # show between-block instructions
         if show_instructions:
@@ -103,8 +106,7 @@ if show_prime_detection_task:
         block_df = create_block(block_num, settings=settings_prime)
         run_block(block_df, stim, prime_det=True,
                   suffix='_prime_detection_block_{}.csv'.format(block_num),
-                  # FIXME: remove break_every and n_trials
-                  break_every=2, n_trials=2, **block_args)
+                  break_every=break_every, n_trials=n_trials, **block_args)
         # show between-block instructions
         if show_instructions:
             instr.present(stop=23 + instr_offset)
