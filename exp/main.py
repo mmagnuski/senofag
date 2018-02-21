@@ -84,19 +84,14 @@ if show_main_proc:
 if show_instructions:
     instr.present(stop=16 + instr_offset)
 
-# show the slide with prime detection initial question
-    # get response
-    # FIXME prime_question is not displayed but the system waits for keys
-    event.getKeys()
+    # show the slide with prime detection initial question
     prime_question = visual.ImageStim(stim['win'], image=instructions[26])
     prime_question.draw()
-    keys = event.getKeys(keyList=['t', 'n'])
-    if keys is None or len(keys) == 0:
-        keys = event.waitKeys(keyList=['t', 'n'])
-    if keys is not None:
-        settings['prime seen'] = keys
-# prime detection task instructions:
-        instr.present(start=15 + instr_offset, stop=21 + instr_offset)
+    stim['win'].flip()
+    keys = event.waitKeys(keyList=['t', 'n'])
+    settings['prime seen'] = keys
+    # prime detection task instructions:
+    instr.present(start=15 + instr_offset, stop=21 + instr_offset)
 
 
 # prime detection task presentation:
