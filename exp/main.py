@@ -83,16 +83,13 @@ if show_main_proc:
 # END INSTRUCTIONS:
 if show_instructions:
     instr.present(stop=16 + instr_offset)
-
-    # show the slide with prime detection initial question
+    # prime detection initial question
     prime_question = visual.ImageStim(stim['win'], image=instructions[26])
     prime_question.draw()
     stim['win'].flip()
-    keys = event.waitKeys(keyList=['t', 'n'])
-    settings['prime seen'] = keys
+    settings['prime seen'] = event.waitKeys(keyList=['t', 'n'])
     # prime detection task instructions:
-    instr.present(start=15 + instr_offset, stop=21 + instr_offset)
-
+    instr.present(stop=21 + instr_offset)
 
 # prime detection task presentation:
 # block_args['settings'] = settings_prime
