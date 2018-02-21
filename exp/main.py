@@ -112,6 +112,6 @@ if show_instructions:
 
 # saving settings to have the prime visibility question
 settings_df = pd.DataFrame.from_dict(settings, orient='index')
-settings_df_name = 'SoA_{}_{}'.format(
-    settings['subject group'], settings['subject name']) + '_settings.csv'
-settings_df.to_csv(os.path.join(settings['data dir'], settings_df_name))
+settings_df_name = 'SoA_{}_{}_settings.csv'.format(
+    settings['subject group'], settings['subject name'])
+settings_df.to_csv(op.join(settings['data dir'], settings_df_name))
