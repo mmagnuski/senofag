@@ -1,6 +1,7 @@
 import os
 import os.path as op
 import pandas as pd
+import numpy as np
 from random import shuffle
 
 from settings import (create_settings, create_block, get_colors_from_square,
@@ -12,9 +13,9 @@ from psychopy import event, visual
 # quick settings
 debug_mode = True
 show_instructions = True
-show_training = False
-show_main_proc = False
-show_prime_detection_task = False
+show_training = True
+show_main_proc = True
+show_prime_detection_task = True
 
 colors = ['red', 'green', 'yellow', 'blue']
 shuffle(colors)
@@ -56,7 +57,7 @@ if show_training:
     test_df = create_block(blockNum=block_num, settings=settings)
     cond_color = get_colors_from_square(colors, block_num, settings=settings)
     run_block(test_df, stim, effect_colors=cond_color, show_effect=False,
-              suffix='_training.csv', break_every=break_every, n_trials=2,
+              suffix='_training.csv', break_every=break_every, n_trials=n_trials,
               **block_args)
 
 # INSTRUCTIONS between the training and main blocks
@@ -74,11 +75,14 @@ if show_main_proc:
         run_block(block_df, stim, show_effect=True,
                   suffix='_regular_block_{}.csv'.format(block_num),
                   effect_colors=cond_color, break_every=break_every,
-                  n_trials=2, **block_args)
+                  n_trials=n_trials, **block_args)
 
         # show between-block instructions
         if show_instructions:
-            instr.present(stop=14 + instr_offset)
+            if np.in1d(block_num, [0, 1, 2]):
+                instr.present(start=12 + instr_offset, stop=14 + instr_offset)
+            else:
+                instr.show_page(page_num=15 + instr_offset)
 
 # END INSTRUCTIONS:
 if show_instructions:
@@ -101,14 +105,19 @@ if show_prime_detection_task:
                   break_every=break_every, n_trials=n_trials, **block_args)
         # show between-block instructions
         if show_instructions:
-            instr.present(stop=23 + instr_offset)
+            if np.in1d(block_num, [0, 1, 2]):
+                instr.present(start=22 + instr_offset, stop=24 + instr_offset)
+            else:
+                instr.show_page(page_num=25 + instr_offset)
 
 # END PROCEDURE INSTRUCTIONS:
 if show_instructions:
-    instr.present(stop=25 + instr_offset)
+    instr.present(stop=26 + instr_offset)
 
 # saving settings to have the prime visibility question
 settings_df = pd.DataFrame.from_dict(settings, orient='index')
 settings_df_name = 'SoA_{}_{}_settings.csv'.format(
     settings['subject group'], settings['subject name'])
 settings_df.to_csv(op.join(settings['data dir'], settings_df_name))
+
+core.quit()

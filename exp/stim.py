@@ -260,7 +260,9 @@ def prime_detection_task(df, stim, trial,  resp_clock=None, trigger=None):
 
     # clear keybord buffer & change fixation to signalise response window
     event.getKeys()
-    for arm in fix: arm.setFillColor((1, -1, -1))
+    for arm in fix:
+        arm.setFillColor((1, -1, -1))
+        arm.setLineColor((1, -1, -1))
     trigger.set_sequence([0, 2], [101, 0])
     show_stim(window=window, stimuli=fix, n_frames=3, trigger=trigger,
               resp_clock=resp_clock)
@@ -272,7 +274,9 @@ def prime_detection_task(df, stim, trial,  resp_clock=None, trigger=None):
         keys = event.waitKeys(keyList=['d', 'l'], timeStamped=resp_clock,
                               maxWait=1.2)
 
-    for arm in fix: arm.setFillColor((1, 1, 1))
+    for arm in fix:
+        arm.setFillColor((1, 1, 1))
+        arm.setLineColor((1, 1, 1))
 
     correct_frames = 0
     if keys is not None:
