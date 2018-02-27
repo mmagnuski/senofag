@@ -7,7 +7,7 @@ from random import shuffle
 from settings import (create_settings, create_block, get_colors_from_square,
                      raise_error)
 from stim import subject_id_gui, create_stimuli, run_block, Instructions
-from psychopy import event, visual
+from psychopy import event, visual, core
 
 
 # quick settings
@@ -15,14 +15,15 @@ debug_mode = True
 show_instructions = True
 show_training = True
 show_main_proc = True
+send_triggers = True
 show_prime_detection_task = True
 
 colors = ['red', 'green', 'yellow', 'blue']
 shuffle(colors)
 
-settings = create_settings(short_test=False, send_triggers=False)
+settings = create_settings(short_test=False, send_triggers=send_triggers)
 settings_prime = create_settings(short_test=False, prime_task=True,
-                          send_triggers=False)
+                                 send_triggers=send_triggers)
 
 subject_data = subject_id_gui()
 settings['subject name'] = subject_data[0]
@@ -82,13 +83,14 @@ if show_main_proc:
             if np.in1d(block_num, [0, 1, 2]):
                 instr.present(start=12 + instr_offset, stop=14 + instr_offset)
             else:
-                instr.show_page(page_num=15 + instr_offset)
+                instr.show_page(page_num=14 + instr_offset)
 
 # END INSTRUCTIONS:
 if show_instructions:
-    instr.present(stop=16 + instr_offset)
+    instr.present(start=15 + instr_offset, stop=16 + instr_offset)
     # prime detection initial question
-    prime_question = visual.ImageStim(stim['win'], image=instructions[26])
+    prime_question = visual.ImageStim(
+        stim['win'], image=instructions[26] + instr_offset)
     prime_question.draw()
     stim['win'].flip()
     settings['prime seen'] = event.waitKeys(keyList=['t', 'n'])
@@ -108,11 +110,11 @@ if show_prime_detection_task:
             if np.in1d(block_num, [0, 1, 2]):
                 instr.present(start=22 + instr_offset, stop=24 + instr_offset)
             else:
-                instr.show_page(page_num=25 + instr_offset)
+                instr.show_page(page_num=24 + instr_offset)
 
 # END PROCEDURE INSTRUCTIONS:
 if show_instructions:
-    instr.present(stop=26 + instr_offset)
+    instr.present(start=25 + instr_offset, stop=26 + instr_offset)
 
 # saving settings to have the prime visibility question
 settings_df = pd.DataFrame.from_dict(settings, orient='index')
