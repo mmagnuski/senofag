@@ -11,10 +11,10 @@ from psychopy import event, visual, core
 
 
 # quick settings
-debug_mode = True
+debug_mode = False
 show_instructions = True
-show_training = True
-show_main_proc = True
+show_training = False
+show_main_proc = False
 send_triggers = True
 show_prime_detection_task = True
 
@@ -66,8 +66,8 @@ if show_instructions:
     instr.present(stop=12 + instr_offset)
 
 # MAIN BLOCKS
-n_trials = 2 if debug_mode else None
-break_every = 2 if debug_mode else None
+n_trials = 2 if debug_mode else 160
+break_every = 2 if debug_mode else 15
 if show_main_proc:
     for block_num in range(4):
         block_df = create_block(block_num, settings=settings)
@@ -90,7 +90,7 @@ if show_instructions:
     instr.present(start=15 + instr_offset, stop=16 + instr_offset)
     # prime detection initial question
     prime_question = visual.ImageStim(
-        stim['win'], image=instructions[26] + instr_offset)
+        stim['win'], image=instructions[26 + instr_offset])
     prime_question.draw()
     stim['win'].flip()
     settings['prime seen'] = event.waitKeys(keyList=['t', 'n'])
@@ -104,7 +104,7 @@ if show_prime_detection_task:
         block_df = create_block(block_num, settings=settings_prime)
         run_block(block_df, stim, prime_det=True,
                   suffix='_prime_detection_block_{}.csv'.format(block_num),
-                  break_every=break_every, n_trials=n_trials, **block_args)
+                  break_every=15, n_trials=80, **block_args)
         # show between-block instructions
         if show_instructions:
             if np.in1d(block_num, [0, 1, 2]):
