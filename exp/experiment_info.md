@@ -77,6 +77,6 @@ from psychopy.monitors import Monitor
 participant_distance = 80
 monitor = "testMonitor"
 if exp['in lab']:
-	monitor = Monitor('BenQ', width=53.136, distance=participant_distance)
-	monitor.setSizePix((1920, 1080))
+    monitor = Monitor('BenQ', width=53.136, distance=participant_distance)
+    monitor.setSizePix((1920, 1080))
 ```
