@@ -101,7 +101,8 @@ if show_instructions:
 # block_args['settings'] = settings_prime
 if show_prime_detection_task:
     for block_num in range(4):
-        block_df = create_block(block_num, settings=settings_prime)
+        block_df = create_block(block_num, settings=settings_prime,
+                                template_file='template_primedet.xls')
         run_block(block_df, stim, prime_det=True,
                   suffix='_prime_detection_block_{}.csv'.format(block_num),
                   break_every=15, n_trials=80, **block_args)

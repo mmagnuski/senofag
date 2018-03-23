@@ -61,7 +61,7 @@ def shuffle_rows(df):
 
 # TODO - move fix time range creation to each trial presentation
 #        OR move all other time randomizations here
-def create_block(blockNum, settings=None):
+def create_block(blockNum, settings=None, template_file='template.xls'):
 	'''Creates block of trials.
 
 	Uses following items from settings dict:
@@ -79,8 +79,7 @@ def create_block(blockNum, settings=None):
 			   'soa_rating', 'rating_RT']
 
 	# read template and select columns
-	template = (pd.read_excel('template.xls') if settings=settings
-				else pd.read_excel('template_primedet.xls'))
+	template = pd.read_excel(template_file)
 	temp_cols = [c for c in columns if c in template.columns]
 	template = template.loc[:, temp_cols]
 
@@ -92,10 +91,12 @@ def create_block(blockNum, settings=None):
 	template.iloc[:n_rows, pos_column_index] = -250 # bottom
 
 	# proportion of trials of Cued vs Free type
-	if settings=settings:
+	if template_file == 'template.xls':
 		prop = settings['proportions']
 		df = pd.concat([template.query('choiceType == "Cued"')] * prop[0] +
 					   [template.query('choiceType == "Free"')] * prop[1])
+	else:
+		df = template
 	df = shuffle_rows(df)
 
 	# add columns that were not present in the template
