@@ -70,10 +70,13 @@ Typ. DCR (DyNomic Contrast Ratio) | `12M:1`
 Panel type | `TN`
 Response time | `1 ms` (GtG)
 
-define monitor this way:
+ja używam mniej więcej tak:
 ```python
 from psychopy.monitors import Monitor
 
 participant_distance = 80
-lab_monitor = Monitor('BenQ', width=53.136, distance=participant_distance)
+monitor = "testMonitor"
+if exp['in lab']:
+    monitor = Monitor('BenQ', width=53.136, distance=participant_distance)
+    monitor.setSizePix((1920, 1080))
 ```
