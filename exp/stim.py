@@ -11,7 +11,7 @@ import numpy as np
 from psychopy import core, visual, event, gui, monitors, parallel
 from settings import ensure_dtypes
 
-monitor = Monitor('BenQ', width=53.136, distance=80)
+monitor = monitors.Monitor('BenQ', width=53.136, distance=80)
 monitor.setSizePix((1920, 1080))
 
 def circle(win, col='green', pos=(0,0), r=2.5):
