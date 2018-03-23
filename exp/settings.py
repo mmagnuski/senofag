@@ -16,8 +16,9 @@ def create_settings(short_test=False, prime_task=False, send_triggers=True):
 	settings['exp dir'] = os.path.dirname(__file__)
 	settings['data dir'] = os.path.join(settings['exp dir'], 'data')
 
-	# CHANGE:
-	settings['buttons'] = ['l', 'd']
+	# BUTTONS
+	settings['buttons'] = ['l', 'd', ('space' if prime_task else None)]
+
 	settings['proportions'] = ([1, 1] if short_test
 							  else [5, 5] if prime_task
 							  else [10, 10])
@@ -78,7 +79,8 @@ def create_block(blockNum, settings=None):
 			   'soa_rating', 'rating_RT']
 
 	# read template and select columns
-	template = pd.read_excel('template.xls')
+	template = (pd.read_excel('template.xls') if settings=settings
+				else pd.read_excel('template_primedet.xls'))
 	temp_cols = [c for c in columns if c in template.columns]
 	template = template.loc[:, temp_cols]
 
@@ -90,9 +92,10 @@ def create_block(blockNum, settings=None):
 	template.iloc[:n_rows, pos_column_index] = -250 # bottom
 
 	# proportion of trials of Cued vs Free type
-	prop = settings['proportions']
-	df = pd.concat([template.query('choiceType == "Cued"')] * prop[0] +
-				   [template.query('choiceType == "Free"')] * prop[1])
+	if settings=settings:
+		prop = settings['proportions']
+		df = pd.concat([template.query('choiceType == "Cued"')] * prop[0] +
+					   [template.query('choiceType == "Free"')] * prop[1])
 	df = shuffle_rows(df)
 
 	# add columns that were not present in the template

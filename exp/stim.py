@@ -8,10 +8,11 @@ from PIL import Image
 
 import numpy as np
 
-    # FIXME 'monitors' not used later
 from psychopy import core, visual, event, gui, monitors, parallel
 from settings import ensure_dtypes
 
+monitor = Monitor('BenQ', width=53.136, distance=80)
+monitor.setSizePix((1920, 1080))
 
 def circle(win, col='green', pos=(0,0), r=2.5):
     circ = visual.Circle(win, pos=pos, radius=r, edges=128, units='deg',
@@ -70,8 +71,7 @@ class Trigger(object):
 
 
 def create_stimuli(fullscr=False, settings=None):
-    # TODO change monitor???
-    window = visual.Window(fullscr=fullscr, monitor='testMonitor',
+    window = visual.Window(fullscr=fullscr, monitor=monitor,
                            units='deg', color='black')
 
     # a list of stimuli images:
