@@ -273,11 +273,11 @@ def prime_detection_task(df, stim, trial,  resp_clock=None, trigger=None):
               resp_clock=resp_clock)
 
     # get response
-    keys = event.getKeys(keyList=['d', 'l'], timeStamped=resp_clock)
+    keys = event.getKeys(keyList=['d', 'l', 'space'], timeStamped=resp_clock)
     # 1500 ms for response if not already given
     if keys is None or len(keys) == 0:
-        keys = event.waitKeys(keyList=['d', 'l'], timeStamped=resp_clock,
-                              maxWait=1.2)
+        keys = event.waitKeys(keyList=['d', 'l', 'space'],
+                              timeStamped=resp_clock, maxWait=1.2)
 
     for arm in fix:
         arm.setFillColor((1, 1, 1))
@@ -303,6 +303,7 @@ def prime_detection_task(df, stim, trial,  resp_clock=None, trigger=None):
 
 
 def eval_resp_prime(df, trial, keys):
+    correct_response = df.loc[trial, 'corrResp']
     if keys is None or len(keys) == 0:
         keys = 'NoResp'
         df.loc[trial, 'ifcorr'] = False
@@ -313,14 +314,7 @@ def eval_resp_prime(df, trial, keys):
         key, key_time = keys[0]
         df.loc[trial, 'resp'] = key
         df.loc[trial, 'RT'] = key_time
-        used_hand = 'l' if key == 'd' else 'r'
-        condition = 'c' if used_hand == df.loc[trial, 'prime'][6] else 'i'
-        if df.loc[trial, 'choiceType'] == 'Free':
-            df.loc[trial, 'cond'] = 'comp' if condition == 'c' else 'incomp'
-        if condition == 'c':
-            df.loc[trial, 'ifcorr'] = True
-        else:
-            df.loc[trial, 'ifcorr'] = False
+        df.loc[trial, 'ifcorr'] = key == correct_response
 
 
 def eval_resp(df, trial, keys, effect_colors=None):
