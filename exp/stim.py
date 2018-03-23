@@ -7,6 +7,7 @@ import time
 from PIL import Image
 
 import numpy as np
+import pandas as pd
 
 from psychopy import core, visual, event, gui, monitors, parallel
 from settings import ensure_dtypes
@@ -231,11 +232,14 @@ def prime_detection_task(df, stim, trial,  resp_clock=None, trigger=None):
     # get stimuli
     fix = stim['fix']
     window = stim['win']
-    prime = stim[df.loc[trial, 'prime']]
+    if not pd.isnull(df.loc[trial, 'prime']):
+        prime = stim[df.loc[trial, 'prime']]
+        prime.pos = (0., df.loc[trial, 'pos'])
+    else:
+        prime = None
     target = stim[df.loc[trial, 'target']]
 
     # set position
-    prime.pos = (0., df.loc[trial, 'pos'])
     target.pos = (0., df.loc[trial, 'pos'])
 
     # show fixation
@@ -245,7 +249,8 @@ def prime_detection_task(df, stim, trial,  resp_clock=None, trigger=None):
 
     # show prime
     trigger.set_sequence([0], [1])
-    show_stim(window=window, stimuli=fix + [prime], n_frames=2,
+    add_stim = [prime] if prime is not None else []
+    show_stim(window=window, stimuli=fix + add_stim, n_frames=2,
               trigger=trigger)
     trigger.set_sequence([0], [0])
     show_stim(window=window, stimuli=fix, n_frames=4, trigger=trigger)
