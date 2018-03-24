@@ -12,8 +12,6 @@ import pandas as pd
 from psychopy import core, visual, event, gui, monitors, parallel
 from settings import ensure_dtypes
 
-monitor = monitors.Monitor('BenQ', width=53.136, distance=80)
-monitor.setSizePix((1920, 1080))
 
 def circle(win, col='green', pos=(0,0), r=2.5):
     circ = visual.Circle(win, pos=pos, radius=r, edges=128, units='deg',
@@ -71,7 +69,10 @@ class Trigger(object):
             self.port.setData(value)
 
 
-def create_stimuli(fullscr=False, settings=None):
+def create_stimuli(fullscr=False, settings=None, monitor='lab'):
+    if monitor == 'lab':
+        monitor = monitors.Monitor('BenQ', width=53.136, distance=80)
+        monitor.setSizePix((1920, 1080))
     window = visual.Window(fullscr=fullscr, monitor=monitor,
                            units='deg', color='black')
 

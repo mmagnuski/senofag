@@ -10,12 +10,14 @@ from stim import subject_id_gui, create_stimuli, run_block, Instructions
 from psychopy import event, visual, core
 
 
-# quick settings
+# SETTINGS
+# --------
 debug_mode = False
+send_triggers = True
+monitor = 'lab'
 show_instructions = True
 show_training = False
 show_main_proc = False
-send_triggers = True
 show_prime_detection_task = True
 
 colors = ['red', 'green', 'yellow', 'blue']
@@ -29,7 +31,7 @@ subject_data = subject_id_gui()
 settings['subject name'] = subject_data[0]
 settings['subject group'] = subject_data[1]
 
-stim = create_stimuli(fullscr=True, settings=settings)
+stim = create_stimuli(fullscr=True, settings=settings, monitor=monitor)
 trigger = stim['trigger']
 
 # make sure data dir exists
