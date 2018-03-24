@@ -10,7 +10,6 @@ from stim import subject_id_gui, create_stimuli, run_block, Instructions
 from psychopy import event, visual, core
 
 
-<<<<<<< HEAD
 # SETTINGS
 # --------
 debug_mode = False
@@ -19,14 +18,6 @@ monitor = 'lab'
 show_instructions = True
 show_training = False
 show_main_proc = False
-=======
-# quick settings
-debug_mode = True
-show_instructions = True
-show_training = True
-show_main_proc = True
-send_triggers = False
->>>>>>> 2841182f718be3223f34cea0289d9883da9aa022
 show_prime_detection_task = True
 
 colors = ['red', 'green', 'yellow', 'blue']
