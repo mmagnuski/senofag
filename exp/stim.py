@@ -469,11 +469,33 @@ def subject_id_gui():
         core.quit()
 
 
+class RelocShape(object):
+    def __init__(self, window, vert, color='white'):
+        self.window = window
+        self.shape_vertices = vert
+        self.color = color
+        self.shape = visual.ShapeStim(window, vertices=vert)
+        self.shape.setFillColor(self.color)
+        self.shape.setLineColor(self.color)
+
+    def setPos(self, pos):
+        # even this doesn't work... (shape still gets messed up)
+        pos_array = np.asarray(pos)[np.newaxis, :]
+        shape = visual.ShapeStim(
+            self.window, vertices=self.shape_vertices + pos_array)
+        shape.setFillColor(self.color)
+        shape.setLineColor(self.color)
+        self.shape = shape
+
+    def draw(self):
+        self.shape.draw()
+
+
 class ArrowStim(object):
-    def __init__(self, window, razor_width=1., razor_height=0.8,
-                 razor_sharpness=0.15, arrow_width=2., arrow_height=1.6,
-                 arrow_sharpness=0.5, arrow_color='white', razor_color='black',
-                 pos=(0, 0)):
+    def __init__(self, window, razor_width=1.5, razor_height=0.8,
+                 razor_sharpness=0.2, arrow_width=2.5, arrow_height=1.6,
+                 arrow_sharpness=1.5, arrow_color='white', razor_color='black',
+                 arrow_direction='right', pos=(0, 0)):
 
         pos_array = np.array(pos)[np.newaxis, :]
         jigjag = np.array([1, -1, 1, -1, 1])
@@ -489,11 +511,15 @@ class ArrowStim(object):
         razor_shape.setFillColor(razor_color)
         razor_shape.setLineColor(razor_color)
 
-        arrow_xpos = arrow_width * np.array([1., 1., 1., -1., -1.])
-        arrow_xpos[1] += arrow_sharpness
+        xpos = [1., 1., 1., -1., -1., -1.]
+        arrow_xpos = arrow_width * np.array(xpos)
+        if arrow_direction in ['left', 'both']:
+            arrow_xpos[-2] += arrow_sharpness
+        if arrow_direction in ['right', 'both']:
+            arrow_xpos[1] += arrow_sharpness
         arrow_ypos = np.concatenate(
             [np.linspace(arrow_height, -arrow_height, num=3),
-             np.linspace(-arrow_height, arrow_height, num=2)])
+             np.linspace(-arrow_height, arrow_height, num=3)])
         arrow_vertices = np.stack([arrow_xpos, arrow_ypos], axis=1)
         arrow_vertices += pos_array
         arrow_shape = visual.ShapeStim(window, vertices=arrow_vertices)
