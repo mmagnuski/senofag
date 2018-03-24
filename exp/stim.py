@@ -77,8 +77,16 @@ def create_stimuli(fullscr=False, settings=None, monitor='lab'):
                            units='deg', color='black')
 
     # a list of stimuli images:
-    stim = {image: resized_image(win=window, image=op.join('pic', image),
-                                 scale=0.5) for image in os.listdir('pic')}
+    stim = dict()
+    stim['cross.png'] = resized_image(win=window, image=op.join('pic', 'cross.png'),
+                                  scale=0.5)
+    stim['target_left.png'] = ArrowStim(window, arrow_direction='left')
+    stim['target_right.png'] = ArrowStim(window, arrow_direction='right')
+    stim['target_both.png'] = ArrowStim(window, arrow_direction='both')
+    stim['prime_left.png'] = prime_from_arrow(stim['target_left.png'],
+                                              prime_direction='left')
+    stim['prime_right.png'] = prime_from_arrow(stim['target_right.png'],
+                                               prime_direction='right')
     stim['win'] = window
     stim['fix'] = fix(win=window)
 
@@ -123,8 +131,6 @@ def show_stim(window, stimuli=None, n_frames=10, resp_clock=None, trigger=None):
             resp_clock.reset()
 
 
-# show_trial could get Trigger from the outside as kwarg,
-# else create one if None...
 def show_trial(df, stim, trial, effect_colors=None, resp_clock=None,
                trigger=None, show_effect=True):
     if resp_clock is None:
@@ -140,8 +146,8 @@ def show_trial(df, stim, trial, effect_colors=None, resp_clock=None,
     target = stim[df.loc[trial, 'target']]
 
     # set position
-    prime.pos = (0., df.loc[trial, 'pos'])
-    target.pos = (0., df.loc[trial, 'pos'])
+    prime.setPos((0., df.loc[trial, 'pos']))
+    target.setPos((0., df.loc[trial, 'pos']))
 
     # show fixation
     trigger.set_sequence([0, 2], [100, 0])
@@ -552,3 +558,18 @@ class ArrowStim(object):
         razor_shape.setFillColor(self.razor_color)
         razor_shape.setLineColor(self.razor_color)
         self.razor = razor_shape
+
+
+def prime_from_arrow(arrow, prime_direction='right'):
+    vert = arrow.razor_vertices.copy()
+    razor_sharpness = np.abs(np.diff(vert[:2, 0]))
+    if prime_direction == 'right':
+        vert[0, 0] -= 2 * razor_sharpness
+        vert[4, 0] -= 2 * razor_sharpness
+        vert[7, 0] += 2 * razor_sharpness
+    elif prime_direction == 'left':
+        vert[5, 0] += 2 * razor_sharpness
+        vert[9, 0] += 2 * razor_sharpness
+        vert[2, 0] -= 2 * razor_sharpness
+    prime_shape = RelocShape(arrow.window, vert)
+    return prime_shape
