@@ -11,11 +11,11 @@ from psychopy import event, visual, core
 
 
 # quick settings
-debug_mode = False
+debug_mode = True
 show_instructions = True
-show_training = False
-show_main_proc = False
-send_triggers = True
+show_training = True
+show_main_proc = True
+send_triggers = False
 show_prime_detection_task = True
 
 colors = ['red', 'green', 'yellow', 'blue']
@@ -50,72 +50,75 @@ if show_instructions:
 
 
 # TRAINING:
-block_num = 0
-n_trials = 2 if debug_mode else 14
-break_every = 2 if debug_mode else 5
+block_num = 1
+n_trials = 2 if debug_mode else 10
+break_every = 3 if debug_mode else 11
 block_args = dict(trigger=trigger, settings=settings)
 if show_training:
     test_df = create_block(blockNum=block_num, settings=settings)
-    cond_color = get_colors_from_square(colors, block_num, settings=settings)
+    cond_color = get_colors_from_square(colors, (block_num-1), settings=settings)
     run_block(test_df, stim, effect_colors=cond_color, show_effect=False,
+              block_num=block_num,
               suffix='_training.csv', break_every=break_every, n_trials=n_trials,
               **block_args)
 
 # INSTRUCTIONS between the training and main blocks
 if show_instructions:
-    instr.present(stop=12 + instr_offset)
+    instr.present(stop=13 + instr_offset)
 
 # MAIN BLOCKS
 n_trials = 2 if debug_mode else 160
 break_every = 2 if debug_mode else 15
 if show_main_proc:
-    for block_num in range(4):
+    for block_num in range(1, 5):
         block_df = create_block(block_num, settings=settings)
-        cond_color = get_colors_from_square(colors, block_num,
+        cond_color = get_colors_from_square(colors, (block_num-1),
                                             settings=settings)
-        run_block(block_df, stim, show_effect=True,
+        run_block(block_df, stim, show_effect=True, block_num=block_num,
                   suffix='_regular_block_{}.csv'.format(block_num),
                   effect_colors=cond_color, break_every=break_every,
                   n_trials=n_trials, **block_args)
 
         # show between-block instructions
         if show_instructions:
-            if np.in1d(block_num, [0, 1, 2]):
-                instr.present(start=12 + instr_offset, stop=14 + instr_offset)
+            if np.in1d(block_num, [1, 2, 3]):
+                instr.present(start=13 + instr_offset, stop=15 + instr_offset)
             else:
-                instr.show_page(page_num=14 + instr_offset)
+                instr.show_page(page_num=15 + instr_offset)
 
 # END INSTRUCTIONS:
 if show_instructions:
-    instr.present(start=15 + instr_offset, stop=16 + instr_offset)
+    instr.present(start=16 + instr_offset, stop=17 + instr_offset)
     # prime detection initial question
     prime_question = visual.ImageStim(
-        stim['win'], image=instructions[26 + instr_offset])
+        stim['win'], image=instructions[29 + instr_offset])
     prime_question.draw()
     stim['win'].flip()
     settings['prime seen'] = event.waitKeys(keyList=['t', 'n'])
     # prime detection task instructions:
-    instr.present(stop=21 + instr_offset)
+    instr.present(stop=24 + instr_offset)
 
 # prime detection task presentation:
 # block_args['settings'] = settings_prime
 if show_prime_detection_task:
-    for block_num in range(4):
+    n_trials = 2 if debug_mode else 128
+    break_every = 2 if debug_mode else 15
+    for block_num in range(1, 3):
         block_df = create_block(block_num, settings=settings_prime,
                                 template_file='template_primedet.xls')
-        run_block(block_df, stim, prime_det=True,
-                  suffix='_prime_detection_block_{}.csv'.format(block_num),
-                  break_every=15, n_trials=80, **block_args)
+        run_block(block_df, stim, prime_det=True, block_num=block_num,
+                  suffix='_prime_detection_{}.csv'.format(block_num),
+                  break_every=break_every, n_trials=n_trials, **block_args)
         # show between-block instructions
         if show_instructions:
-            if np.in1d(block_num, [0, 1, 2]):
-                instr.present(start=22 + instr_offset, stop=24 + instr_offset)
+            if np.in1d(block_num, [1]):
+                instr.present(start=25 + instr_offset, stop=27 + instr_offset)
             else:
-                instr.show_page(page_num=24 + instr_offset)
+                instr.show_page(page_num=27 + instr_offset)
 
 # END PROCEDURE INSTRUCTIONS:
 if show_instructions:
-    instr.present(start=25 + instr_offset, stop=26 + instr_offset)
+    instr.present(start=28 + instr_offset, stop=29 + instr_offset)
 
 # saving settings to have the prime visibility question
 settings_df = pd.DataFrame.from_dict(settings, orient='index')

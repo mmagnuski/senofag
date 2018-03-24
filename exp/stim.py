@@ -173,6 +173,10 @@ def show_trial(df, stim, trial, effect_colors=None, resp_clock=None,
         correct_frames = 2
         trigger.send(8)
         trigger.set_sequence([1], [0])
+        # ADD offset time for the target presentation???
+        # after 250 - 500 ms from response mask disappears
+    	# offset = np.random.randint(25, 50) * 1.
+    	# core.wait(offset / 100.)
         show_stim(window=window, stimuli=None, n_frames=2)
 
     # evaluate repsonse
@@ -347,10 +351,12 @@ def eval_resp(df, trial, keys, effect_colors=None):
         df = ensure_dtypes(df)
 
 
-def show_break(window):
+def show_break(window, trial_num, max_trials, block_num):
     # TODO add info about how many trials passed, which block it is ...?
     event.getKeys()
-    break_text = u'To jest ekran przerwy\n\nAby przejść dalej\nnaciśnij spację'
+    break_text = (u'To jest ekran przerwy\nTo blok numer {}\n'
+                  u'Próba nr {}/{}\n\nAby przejść dalej\n'
+                  u'naciśnij spację').format(block_num, trial_num, max_trials)
     text = visual.TextStim(window, text=break_text)
     text.draw()
     window.flip()
@@ -362,7 +368,7 @@ def show_break(window):
     # TODO random wait after break?
 
 
-def run_block(block_df, stim, break_every=15, n_trials=None,
+def run_block(block_df, stim, break_every=15, n_trials=None, block_num=None,
               effect_colors=None, trigger=None, show_effect=None,
               prime_det=False, settings=None, suffix='_data.csv'):
     # set dataframe file name
@@ -389,7 +395,7 @@ def run_block(block_df, stim, break_every=15, n_trials=None,
         block_df.loc[trial, 'saveTime'] = t1 - t0
 
         if (trial) % break_every == 0:
-            show_break(stim['win'])
+            show_break(stim['win'], trial, max_trials, block_num)
 
 
 def check_quit(keys=None):
