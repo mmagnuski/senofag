@@ -245,13 +245,13 @@ def prime_detection_task(df, stim, trial,  resp_clock=None, trigger=None):
     window = stim['win']
     if not pd.isnull(df.loc[trial, 'prime']):
         prime = stim[df.loc[trial, 'prime']]
-        prime.pos = (0., df.loc[trial, 'pos'])
+        prime.setPos((0., df.loc[trial, 'pos']))
     else:
         prime = None
     target = stim[df.loc[trial, 'target']]
 
     # set position
-    target.pos = (0., df.loc[trial, 'pos'])
+    target.setPos((0., df.loc[trial, 'pos']))
 
     # show fixation
     trigger.set_sequence([0, 2], [100, 0])
