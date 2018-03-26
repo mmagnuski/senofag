@@ -12,12 +12,12 @@ from psychopy import event, visual, core
 
 # SETTINGS
 # --------
-debug_mode = False
-send_triggers = True
+debug_mode = True
+send_triggers = False
 monitor = 'lab'
 show_instructions = True
-show_training = False
-show_main_proc = False
+show_training = True
+show_main_proc = True
 show_prime_detection_task = True
 
 colors = ['red', 'green', 'yellow', 'blue']

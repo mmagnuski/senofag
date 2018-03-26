@@ -27,7 +27,7 @@ def whiteshape(v, win=None):
 
 
 # create fixation cross:
-def fix(ln=1, lw=0.1, win=None):
+def fix(ln=0.5, lw=0.1, win=None):
     hlw = lw / 2
     v = np.array([[hlw, -ln], [hlw, ln], [-hlw, ln], [-hlw, -ln]])
     fix = list()
