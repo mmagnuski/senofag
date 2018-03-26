@@ -21,13 +21,6 @@ arrow = ArrowStim(stim['win'], razor_width=1.5, arrow_width=2.5,
                   arrow_sharpness=1.5, razor_sharpness=0.2)
 prime = prime_from_arrow(arrow)
 
-prime.draw()
-window.flip()
-event.waitKeys()
-
-arrow.draw()
-window.flip()
-event.waitKeys()
 
 arrow.setPos((0., 3.))
 prime.setPos((0., 3.))
@@ -35,6 +28,14 @@ window.flip()
 core.wait(1.)
 prime.draw()
 window.flip()
+event.waitKeys()
+arrow.draw()
+window.flip()
+event.waitKeys()
+
+arrow = ArrowStim(stim['win'], razor_width=1.5, arrow_width=2.5,
+                 arrow_sharpness=1.5, razor_sharpness=0.2,
+                 arrow_direction='both')
 arrow.draw()
 window.flip()
 event.waitKeys()

@@ -86,9 +86,9 @@ def create_block(blockNum, settings=None, template_file='template.xls'):
 	# duplicate template to add top / bottom position
 	n_rows = template.shape[0]
 	template = pd.concat([template, template])
-	template.loc[:, 'pos'] = 250  # top
+	template.loc[:, 'pos'] = 5  # top
 	pos_column_index = template.columns.tolist().index('pos')
-	template.iloc[:n_rows, pos_column_index] = -250 # bottom
+	template.iloc[:n_rows, pos_column_index] = -5 # bottom
 
 	# proportion of trials of Cued vs Free type
 	if template_file == 'template.xls':

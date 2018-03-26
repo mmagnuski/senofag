@@ -71,7 +71,7 @@ class Trigger(object):
 
 def create_stimuli(fullscr=False, settings=None, monitor='lab'):
     if monitor == 'lab':
-        monitor = monitors.Monitor('BenQ', width=53.136, distance=80)
+        monitor = monitors.Monitor('BenQ', width=53.136, distance=95.)
         monitor.setSizePix((1920, 1080))
     window = visual.Window(fullscr=fullscr, monitor=monitor,
                            units='deg', color='black')
@@ -506,7 +506,7 @@ class RelocShape(object):
 class ArrowStim(object):
     def __init__(self, window, razor_width=1.5, razor_height=0.8,
                  razor_sharpness=0.2, arrow_width=2.5, arrow_height=1.6,
-                 arrow_sharpness=1.5, arrow_color='white', razor_color='black',
+                 arrow_sharpness=1.5, arrow_color='grey', razor_color='black',
                  arrow_direction='right', pos=(0, 0)):
 
         pos_array = np.array(pos)[np.newaxis, :]
@@ -526,7 +526,7 @@ class ArrowStim(object):
         xpos = [1., 1., 1., -1., -1., -1.]
         arrow_xpos = arrow_width * np.array(xpos)
         if arrow_direction in ['left', 'both']:
-            arrow_xpos[-2] += arrow_sharpness
+            arrow_xpos[-2] -= arrow_sharpness
         if arrow_direction in ['right', 'both']:
             arrow_xpos[1] += arrow_sharpness
         arrow_ypos = np.concatenate(
@@ -577,5 +577,5 @@ def prime_from_arrow(arrow, prime_direction='right'):
         vert[5, 0] += 2 * razor_sharpness
         vert[9, 0] += 2 * razor_sharpness
         vert[2, 0] -= 2 * razor_sharpness
-    prime_shape = RelocShape(arrow.window, vert)
+    prime_shape = RelocShape(arrow.window, vert, color=arrow.arrow_color)
     return prime_shape
