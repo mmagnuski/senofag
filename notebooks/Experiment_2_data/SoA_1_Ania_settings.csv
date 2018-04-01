@@ -1,0 +1,14 @@
+,0
+subject group,1
+subject name,000092
+kwadrat,"[[0 3 2 1]
+ [1 0 3 2]
+ [2 1 0 3]
+ [3 2 1 0]]"
+proportions,"[10, 10]"
+prime seen,['t']
+data dir,D:\PROCEDURY\senofag\exp\data
+buttons,"['l', 'd']"
+fix time range,"(100, 150)"
+exp dir,D:\PROCEDURY\senofag\exp
+port address,56320
