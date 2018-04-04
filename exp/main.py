@@ -12,7 +12,7 @@ from psychopy import event, visual, core
 
 # SETTINGS
 # --------
-debug_mode = True
+debug_mode = False
 send_triggers = False
 monitor = 'lab'
 show_instructions = True
@@ -66,7 +66,7 @@ if show_training:
 
 # INSTRUCTIONS between the training and main blocks
 if show_instructions:
-    instr.present(stop=13 + instr_offset)
+    instr.present(stop=14 + instr_offset)
 
 # MAIN BLOCKS
 n_trials = 2 if debug_mode else 160
@@ -84,21 +84,21 @@ if show_main_proc:
         # show between-block instructions
         if show_instructions:
             if np.in1d(block_num, [1, 2, 3]):
-                instr.present(start=13 + instr_offset, stop=15 + instr_offset)
+                instr.present(start=14 + instr_offset, stop=16 + instr_offset)
             else:
-                instr.show_page(page_num=15 + instr_offset)
+                instr.show_page(page_num=16 + instr_offset)
 
 # END INSTRUCTIONS:
 if show_instructions:
-    instr.present(start=16 + instr_offset, stop=17 + instr_offset)
+    instr.present(start=17 + instr_offset, stop=18 + instr_offset)
     # prime detection initial question
     prime_question = visual.ImageStim(
-        stim['win'], image=instructions[29 + instr_offset])
+        stim['win'], image=instructions[30 + instr_offset])
     prime_question.draw()
     stim['win'].flip()
     settings['prime seen'] = event.waitKeys(keyList=['t', 'n'])
     # prime detection task instructions:
-    instr.present(stop=24 + instr_offset)
+    instr.present(stop=25 + instr_offset)
 
 # prime detection task presentation:
 # block_args['settings'] = settings_prime
@@ -114,13 +114,13 @@ if show_prime_detection_task:
         # show between-block instructions
         if show_instructions:
             if np.in1d(block_num, [1]):
-                instr.present(start=25 + instr_offset, stop=27 + instr_offset)
+                instr.present(start=26 + instr_offset, stop=28 + instr_offset)
             else:
-                instr.show_page(page_num=27 + instr_offset)
+                instr.show_page(page_num=28 + instr_offset)
 
 # END PROCEDURE INSTRUCTIONS:
 if show_instructions:
-    instr.present(start=28 + instr_offset, stop=29 + instr_offset)
+    instr.present(start=29 + instr_offset, stop=30 + instr_offset)
 
 # saving settings to have the prime visibility question
 settings_df = pd.DataFrame.from_dict(settings, orient='index')
