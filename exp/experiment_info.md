@@ -1,4 +1,5 @@
 ## EXPERIMENT STRUCTURE
+Python version used: 1.85.6
 ### MAIN PROCEDURE
 category | value
 ---|---
